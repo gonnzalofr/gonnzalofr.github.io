@@ -1,0 +1,16 @@
+{
+  "name": "website-portfolio",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "python tools/check_site.py dist"
+  },
+  "type": "module",
+  "dependencies": {
+    "astro": "^7.3.2",
+    "three": "^0.186.1"
+  },
+  "private": true
+}

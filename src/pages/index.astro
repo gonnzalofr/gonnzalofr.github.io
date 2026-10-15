@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import { isPlaceholder } from '../lib/placeholder';
+// The Venus band shows the bench photograph once the real one replaces the placeholder; until then, the to-scale drawing.
+const venusPhoto = !isPlaceholder('assets/work/venus-bench-front.jpg');
+---
+<Base
+  title="Gonzalo Ferrero Martín — Electrical Engineering student, TU/e"
+  description="Electrical Engineering student at TU/e, Eindhoven. PCB design, Verilog on FPGAs, embedded C, and the testbenches that check the result."
+  kind="home"
+  depth={0}
+  ground="paper"
+>
+<main id="main">
+
+  <section class="page intro">
+    <p class="kicker col-full"><span class="nc">BSc</span> Electrical Engineering · <span class="nc">TU/e</span> · <span class="nb">2025 – 28</span> · Eindhoven</p>
+    <h1 class="col-full">Gonzalo <span class="nb">Ferrero Martín</span></h1>
+    <p class="deck col-prose">Second-year Electrical Engineering student at TU/e, Eindhoven. I do circuit and PCB design, Verilog on FPGAs and embedded C, and I write the testbenches that check the result.</p>
+
+    <div class="intro__about col-prose">
+      <p>I like working the whole length of a device rather than one layer of it: the board, the HDL, the firmware on ESP32 and PYNQ boards, and the Python tooling that ties a bench together. Outside the coursework I build things — a DVI transmitter, a battery-powered music player — and inside it I have been on a rover team and a first-year embedded project. At Student Team Daedalus, from January to 14 October 2026, I did PCB design, embedded programming and bench verification for a solar-powered autonomous aircraft for wildfire surveillance.</p>
+      <p>What I care about is verification, not just getting something to blink: a self-checking testbench that decodes every symbol the encoder emits, a simulated frame dumped to a file with seven timing counts checked against constants, a sensor read confirmed by a vote before the robot acts on it.</p>
+      <p class="intro__act"><a href="cv.html">Read the CV</a> · <a href="assets/Gonzalo-Ferrero-Martin-CV.pdf">PDF, one A4 page</a> · <a href="#contact">Contact</a></p>
+    </div>
+
+    <dl class="intro__facts col-margin">
+      <div><dt>Study</dt><dd>BSc EE · TU/e · <span class="nb">2025 – 28</span> · first-year weighted average <span class="nb">9.58 / 10</span></dd></div>
+      <div><dt>Team</dt><dd><a href="notes.html#daedalus">Student Team Daedalus</a> · <span class="nb">Jan – 14 Oct 2026</span></dd></div>
+      <div><dt>Now</dt><dd>Student Mentor, first-year EE · <span class="nb">Sep 2026 – Jun 2027</span></dd></div>
+      <div><dt>Next</dt><dd>Student Assistant &amp; Course Reviewer, Communication 1 · <span class="nb">Apr – Jul 2027</span></dd></div>
+      <div><dt>Languages</dt><dd>Spanish · English · French (B1)</dd></div>
+      <div><dt>Work auth</dt><dd>EU citizen · US to 2028</dd></div>
+      <div><dt>Schooling</dt><dd>Spain · Canada · United States</dd></div>
+    </dl>
+  </section>
+
+  <section class="choose" id="work" aria-labelledby="work-h">
+    <div class="page choose__head">
+      <p class="kicker col-full">4 case studies · 1 team · 5 smaller builds — pick one</p>
+      <h2 class="col-full" id="work-h">Work</h2>
+    </div>
+
+    <ol class="bands">
+      <li class="band" data-ground="black">
+        <div class="page band__in">
+          <div class="band__text">
+            <p class="band__no">01</p>
+            <h3 class="band__name"><a href="work/hdmi-dvi-transmitter.html">HDMI / DVI transmitter</a></h3>
+            <p class="band__line">A DVI video pipeline in Verilog: timing, pattern and TMDS encoder verified in simulation; the 10:1 serializer is being written.</p>
+            <p class="band__meta">Verilog · XSIM · PYNQ-Z2 — <span class="nb">Jul 2026 – present</span> — <span class="status">in progress</span></p>
+          </div>
+          <figure class="band__fig band__fig--env" aria-hidden="true">
+            <div class="envelope">
+              <img src="assets/hdmi-frame-640x480.png" width="640" height="480" loading="lazy" decoding="async" alt="">
+            </div>
+          </figure>
+        </div>
+      </li>
+
+      <li class="band" data-ground="sand">
+        <div class="page band__in">
+          <div class="band__text">
+            <p class="band__no">02</p>
+            <h3 class="band__name"><a href="work/venus-rover.html">Venus rover</a></h3>
+            <p class="band__line">Run-on-boot C firmware for a PYNQ-Z2 rover that hunts colored cubes and shares every find with a partner over MQTT; a cube counts only after two of six reads agree within <span class="nb">5 cm</span>.</p>
+            <p class="band__meta">C · Python · PYNQ-Z2 · MQTT — <span class="nc">TU/e</span> 5EID0 · 2026 — complete</p>
+          </div>
+          {venusPhoto ? (
+          <figure class="band__fig band__fig--photo" aria-hidden="true">
+            <img src="assets/work/venus-bench-front.jpg" width="1125" height="2000" loading="lazy" decoding="async" alt="">
+          </figure>
+          ) : (
+          <figure class="band__fig band__fig--draw" aria-hidden="true">
+            <svg viewBox="0 0 400 290">
+              <defs>
+                <pattern id="hatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)"><line class="s-axis" x1="3.5" y1="0" x2="3.5" y2="7"/></pattern>
+              </defs>
+              <line class="s-axis" x1="0" y1="250" x2="400" y2="250"/>
+              <text class="t-ink" x="0" y="18">VL53L0X ×3 · one I²C bus</text>
+              <rect class="crisp" x="0" y="90" width="50" height="160"/>
+              <rect class="crisp" x="50" y="230" width="16" height="10"/>
+              <rect class="crisp" x="50" y="200" width="16" height="10"/>
+              <rect class="crisp" x="50" y="145" width="16" height="10"/>
+              <line class="s-axis" x1="58" y1="155" x2="58" y2="230"/>
+              <g class="s-axis" stroke-dasharray="4 3">
+                <line x1="66" y1="235" x2="140" y2="235"/>
+                <line x1="66" y1="205" x2="200" y2="205"/>
+                <line x1="66" y1="150" x2="310" y2="150"/>
+              </g>
+              <text class="t-ink" x="72" y="228">bottom</text>
+              <text class="t-ink" x="72" y="198">mid</text>
+              <text class="t-ink" x="72" y="143">top</text>
+              <rect class="crisp" x="140" y="220" width="30" height="30"/>
+              <rect class="crisp" x="200" y="190" width="60" height="60"/>
+              <rect class="crisp f-hatch" x="310" y="130" width="40" height="120"/>
+              <text class="t-ink" x="140" y="272">3 cm</text>
+              <text class="t-ink" x="200" y="272">6 cm</text>
+              <text class="t-ink" x="310" y="272">obstacle</text>
+            </svg>
+          </figure>
+          )}
+        </div>
+      </li>
+
+      <li class="band" data-ground="paper">
+        <div class="page band__in">
+          <div class="band__text">
+            <p class="band__no">03</p>
+            <h3 class="band__name"><a href="work/hifi-player.html">HiFi player</a></h3>
+            <p class="band__line">A battery-powered music player: schematic, 4-layer PCB, power path and ESP32-S3R8 firmware; Bluetooth or microSD into an I2S DAC. Designed end to end; nothing assembled or bench-verified yet.</p>
+            <p class="band__meta">PCB layout · C · ESP32-S3R8 — <span class="nb">May 2026 – present</span> — <span class="status">in progress</span></p>
+          </div>
+          <figure class="band__fig band__fig--board" aria-hidden="true">
+            <img src="assets/pcb/hifi-board-cut.webp" width="1600" height="800" loading="lazy" decoding="async" alt="">
+          </figure>
+        </div>
+      </li>
+
+      <li class="band" data-ground="walnut">
+        <div class="page band__in">
+          <div class="band__text">
+            <p class="band__no">04</p>
+            <h3 class="band__name"><a href="work/rock-your-baby.html">Rock Your Baby</a></h3>
+            <p class="band__line">A baby-monitoring cradle across four PYNQ-Z2 boards, one subsystem each, talking over UART.</p>
+            <p class="band__meta">C · libpynq — <span class="nc">TU/e</span> 5EWC0 · <span class="nb">2025 – 26</span> — complete</p>
+          </div>
+          <figure class="band__fig band__fig--draw" aria-hidden="true">
+            <svg viewBox="0 0 406 356">
+              <rect class="crisp" x="0" y="0" width="200" height="32"/>
+              <text class="t-ink" x="12" y="21">heartbeat</text>
+              <text x="0" y="50">ADC → filter → BPM</text>
+              <text x="0" y="68">waveform on 240×240 TFT</text>
+              <rect class="crisp" x="0" y="84" width="200" height="32"/>
+              <text class="t-ink" x="12" y="105">crying</text>
+              <text x="0" y="134">ADC → RMS − noise floor</text>
+              <text x="0" y="152">three pthreads</text>
+              <path class="crisp" d="M200 16 H360 V192 H300 M200 100 H360"/><path d="M309 187 L300 192 L309 197"/>
+              <text x="366" y="62">UART</text>
+              <rect class="crisp" x="0" y="176" width="300" height="32"/>
+              <text class="t-ink" x="12" y="197">decision-making</text>
+              <text x="0" y="226">fuse → frequency 1–5,</text>
+              <text x="0" y="244">amplitude 1–5 → UART</text>
+              <line class="crisp" x1="150" y1="254" x2="150" y2="280"/><path d="M145 271 L150 280 L155 271"/>
+              <text x="160" y="272">UART</text>
+              <rect class="crisp" x="0" y="280" width="200" height="32"/>
+              <text class="t-ink" x="12" y="301">actuator</text>
+              <text x="0" y="330">PWM 1 → frequency</text>
+              <text x="0" y="348">PWM 2 → amplitude</text>
+            </svg>
+          </figure>
+        </div>
+      </li>
+
+      <li class="band band--team" data-ground="dusk">
+        <div class="page band__in">
+          <div class="band__text">
+            <p class="band__no">Team</p>
+            <h3 class="band__name"><a href="notes.html#daedalus">Student Team Daedalus</a></h3>
+            <p class="band__line">PCB design, embedded programming and bench verification for a solar-powered autonomous aircraft for wildfire surveillance.</p>
+            <p class="band__meta">Electrical / Embedded Systems — <span class="nb">Jan – 14 Oct 2026</span></p>
+          </div>
+          <div class="band__fig band__fig--spec">
+            <dl class="spec">
+              <div><dt>Aircraft</dt><dd>Lapyx 4</dd></div>
+              <div><dt>Wingspan</dt><dd>4.0 m</dd></div>
+              <div><dt>Mass</dt><dd>9.2 kg</dd></div>
+              <div><dt>Solar</dt><dd><span class="nb">225 W</span> across the upper wing</dd></div>
+              <div><dt>Endurance</dt><dd>about <span class="nb">7 h</span> on battery alone, estimated</dd></div>
+              <div><dt>First flight</dt><dd>25 Feb 2026</dd></div>
+            </dl>
+          </div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="page builds">
+      <p class="kicker col-full">Smaller builds · coursework and side projects</p>
+      <ul class="builds__list col-full">
+        <li><a href="work/index.html#counter">32-bit counter from gate logic</a> <span>Verilog · 5EIC0</span></li>
+        <li><a href="work/index.html#edurv">EduRV RISC-V labs</a> <span>Verilog · C · 5EIC0</span></li>
+        <li><a href="work/index.html#i2c">I²C master</a> <span>Verilog · in progress</span></li>
+        <li><a href="work/index.html#plotter">Function plotter</a> <span>C · libpynq</span></li>
+        <li><a href="work/index.html#snake">Snake</a> <span>C · libpynq</span></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+</Base>

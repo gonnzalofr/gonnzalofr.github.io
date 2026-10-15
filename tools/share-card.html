@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Share card — Gonzalo Ferrero Martín</title>
+<!--
+  The share card: the og:image of every page (Base.astro), 1200 × 630, rendered from this file to public/assets/share-card.png.
+  It is a home band with the person in it: kicker, the name set wide, one line, and the XSIM frame in its 800×525 envelope.
+  Re-render it after any change here (README, "Share card"). Add ?ground=paper to the address to try it on paper.
+  Not part of the site: nothing in src/ or public/ links to this file, and it is not copied to dist/.
+-->
+<style>
+@font-face {
+  font-family: 'Anybody'; font-style: normal; font-weight: 100 900; font-stretch: 50% 150%;
+  src: url('../public/fonts/anybody-var.woff2') format('woff2');
+  unicode-range: U+0000-00D6, U+00D8-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Anybody'; font-style: normal; font-weight: 100 900; font-stretch: 50% 150%;
+  src: url('../public/fonts/azeretmono-var.woff2') format('woff2');
+  unicode-range: U+00D7;
+}
+@font-face {
+  font-family: 'Azeret Mono'; font-style: normal; font-weight: 100 900;
+  src: url('../public/fonts/azeretmono-var.woff2') format('woff2');
+}
+/* the HDMI band's ground and inks (site.css, section 1); ?ground=paper swaps in the intro's */
+:root { --g: #120E0B; --ink: #F4ECDF; --dim: #B3A796; }
+:root.paper { --g: #F3EEE4; --ink: #1C150F; --dim: #5E5244; }
+* { box-sizing: border-box; font-feature-settings: "calt" 0, "liga" 0; }
+html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+body { background: var(--g); color: var(--ink); font: 400 28px/1.35 "Anybody", sans-serif; font-stretch: 100%; -webkit-font-smoothing: antialiased; }
+.card { display: grid; grid-template-columns: minmax(0, 1fr) 400px; column-gap: 56px; align-items: center; height: 100%; padding: 56px 64px; }
+.kicker, .url, figcaption { font-family: "Azeret Mono", monospace; color: var(--dim); }
+.kicker { font-size: 20px; line-height: 1.4; margin: 0 0 22px; }
+h1 { font: 800 84px/.9 "Anybody", sans-serif; font-stretch: 150%; letter-spacing: -.02em; margin: 0; }
+.line { margin: 32px 0 0; max-width: 22em; letter-spacing: -.005em; }
+.url { font-size: 20px; line-height: 1.4; margin: 26px 0 0; }
+figure { margin: 0; }
+.envelope { position: relative; aspect-ratio: 800 / 525; border: 1px solid var(--dim); background: repeating-linear-gradient(45deg, transparent 0 10px, var(--dim) 10px 11px); }
+.envelope img { position: absolute; left: 0; top: 0; width: 80%; height: calc(480 / 525 * 100%); image-rendering: pixelated; }
+figcaption { font-size: 16px; line-height: 1.4; margin-top: 14px; }
+</style>
+<script>if (/[?&]ground=paper\b/.test(location.search)) document.documentElement.className = 'paper';</script>
+</head>
+<body>
+<div class="card">
+  <div>
+    <p class="kicker">BSc Electrical Engineering · TU/e · Eindhoven</p>
+    <h1>Gonzalo<br>Ferrero<br>Martín</h1>
+    <p class="line">PCB design, Verilog on FPGAs, embedded C, and the testbenches that check the result.</p>
+    <p class="url">gonnzalofr.github.io</p>
+  </div>
+  <figure>
+    <div class="envelope"><img src="../public/assets/hdmi-frame-640x480.png" width="640" height="480" alt=""></div>
+    <figcaption>640×480 frame from the XSIM testbench</figcaption>
+  </figure>
+</div>
+</body>
+</html>

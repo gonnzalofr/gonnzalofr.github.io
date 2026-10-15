@@ -1,0 +1,24 @@
+---
+// The four-corner chrome: Work, Notes, (Log), CV from the page's center line; Contact at the right edge.
+// Every href stays relative.
+import { getCollection } from 'astro:content';
+import { isPublished } from '../lib/placeholder';
+export type Kind = 'home' | 'notes' | 'work-index' | 'work-case' | 'log' | 'cv' | 'other';
+interface Props { kind: Kind; depth: 0 | 1 | 'abs'; entry?: boolean }
+const { kind, depth, entry = false } = Astro.props;
+const P = depth === 'abs' ? new URL('./', Astro.site).href : depth ? '../' : '';
+const inWork = kind === 'work-index' || kind === 'work-case';
+const workHref = kind === 'work-case' ? 'index.html' : `${P}work/index.html`;
+const workCurrent = kind === 'work-index' ? 'page' : kind === 'work-case' ? 'true' : undefined;
+const notesCurrent = kind === 'notes' ? 'page' : undefined;
+const logCurrent = kind === 'log' ? (entry ? 'true' : 'page') : undefined;
+const cvCurrent = kind === 'cv' ? 'page' : undefined;
+const hasLog = (await getCollection('log', isPublished)).length > 0;
+---
+<nav class="head__nav" aria-label="Site">
+  <a class="head__mid" href={inWork ? workHref : `${P}work/index.html`} aria-current={workCurrent}>Work</a>
+  <a class="head__mid" href={`${P}notes.html`} aria-current={notesCurrent}>Notes</a>
+  {hasLog && <a class="head__mid" href={`${P}log/index.html`} aria-current={logCurrent}>Log</a>}
+  <a class="head__mid" href={`${P}cv.html`} aria-current={cvCurrent}>CV</a>
+  <a class="head__end" href="#contact">Contact</a>
+</nav>

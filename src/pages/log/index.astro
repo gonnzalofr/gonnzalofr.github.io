@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { longDate, isoDate } from '../../scripts/dates';
+import { isPublished } from '../../lib/placeholder';
+
+const entries = (await getCollection('log', isPublished)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const newest = entries[0]?.data.date;
+---
+<Base
+  title="Log — Gonzalo Ferrero Martín"
+  description="A bench log: dated entries on what is on the bench and what changed, with the photographs and renders that show it."
+  kind="log"
+  depth={1}
+  noindex={entries.length === 0}
+  ground="paper"
+>
+<main id="main">
+
+  <section class="page cs">
+    <p class="kicker col-head">Bench log · {entries.length} {entries.length === 1 ? 'entry' : 'entries'}{newest && <Fragment> · newest {longDate(newest)}</Fragment>}</p>
+    <h1 class="col-head">Log</h1>
+    <p class="deck col-prose">What is on the bench and what changed, one dated entry at a time, newest first.</p>
+  </section>
+
+  <section class="page sec" id="entries">
+    {entries.length === 0 && <p class="col-prose">No entries are published yet: each one appears once its photographs are on the site.</p>}
+    <ul class="nlist col-prose">
+      {entries.map((e) => (
+        <li id={e.id}>
+          <p class="nlist__kicker"><time datetime={isoDate(e.data.date)}>{longDate(e.data.date)}</time></p>
+          <h2 class="nlist__title"><a href={`${e.id}.html`}>{e.data.title}</a></h2>
+          <p>{e.data.summary}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+</main>
+</Base>
