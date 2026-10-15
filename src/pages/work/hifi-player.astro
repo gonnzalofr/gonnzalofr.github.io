@@ -5,7 +5,7 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
 ---
 <Base
   title="Battery-powered HiFi player — Gonzalo Ferrero Martín"
-  description="A battery-powered HiFi player on a 4-layer PCB: ESP32-S3R8, Bluetooth or microSD source, I2S DAC. Schematic, layout and firmware, in progress."
+  description="A battery-powered HiFi player on a 4-layer PCB: ESP32-S3R8, Bluetooth or microSD source, I2S DAC. A design study: schematic and three layout revisions, never built or bench-tested."
   kind="work-case"
   depth={1}
   ground="paper"
@@ -13,7 +13,7 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
 <main id="main">
 
   <section class="page cs">
-    <p class="kicker col-head">Personal project · <span class="nb">May 2026 – present</span></p>
+    <p class="kicker col-head">Personal design study · <span class="nb">May – Oct 2026</span></p>
     <h1 class="col-head">Battery-powered HiFi player</h1>
     <p class="deck col-prose">A battery-powered music player designed end to end: schematic, four-layer board, power path, firmware.</p>
 
@@ -53,7 +53,7 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
       <div class="meta__cell"><dt>Role</dt><dd>Everything — personal project</dd></div>
       <div class="meta__cell"><dt>Stack</dt><dd>PCB layout · C · ESP32-S3R8</dd></div>
       <div class="meta__cell"><dt>Board</dt><dd>ESP32-S3R8 · 4-layer PCB</dd></div>
-      <div class="meta__cell"><dt>Status</dt><dd><span class="status">in progress</span></dd></div>
+      <div class="meta__cell"><dt>Status</dt><dd>design only — not built or bench-tested</dd></div>
     </dl>
   </section>
 
@@ -66,7 +66,7 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
 
       <h2 class="col-head" id="sources">Two sources, one DAC</h2>
       <p class="col-prose">Audio streams in from Bluetooth or from a microSD card. Either source is routed through a MUX into an I2S DAC (Fig.&nbsp;1). The ESP32-S3R8 handles both sources on the same chip.</p>
-      <p class="col-prose">The board is four layers (Fig.&nbsp;2). The power path is designed for battery operation, so the whole thing is meant to leave the bench.</p>
+      <p class="col-prose">The board is four layers (Fig.&nbsp;2). The power path is designed for battery operation, so the whole thing was meant to leave the bench.</p>
 
       <figure class="fig fig--right" id="fig-2">
         <div class="fig__scroll" tabindex="0" role="group" aria-labelledby="fig-2-cap">
@@ -95,7 +95,7 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
       </figure>
 
       <h2 class="col-head" id="board">The board</h2>
-      <p class="col-prose">This is the current layout as a 3D model, straight from the EasyEDA Pro export: <span class="nb">70.9 × 50.4 mm</span>, and <span class="nb">8.5 mm</span> deep with the parts on. It is the design file, not a photograph; nothing on it has been assembled yet.</p>
+      <p class="col-prose">This is the current layout as a 3D model, straight from the EasyEDA Pro export: <span class="nb">70.9 × 50.4 mm</span>, and <span class="nb">8.5 mm</span> deep with the parts on. It is the design file, not a photograph; nothing on it was ever assembled.</p>
 
       <figure class="fig fig--bleed board" id="fig-board" data-model="../assets/pcb/hifi-board.glb" data-label="The current HiFi player board as a 3D model. Drag, or use the arrow keys, to turn it.">
         <div class="board__stage">
@@ -138,16 +138,16 @@ const renders = ['hifi-rev1.png', 'hifi-rev2.png', 'hifi-rev3.png'].every((f) =>
         <p>Four layers, a battery, and two audio sources sharing one DAC.</p>
       </aside>
 
-      <h2 class="col-head" id="not-done">What is not done</h2>
-      <p class="col-prose">The project is in progress. I will describe it as finished only when a board plays music from both sources on battery. The pieces of the work are listed as they stand.</p>
+      <h2 class="col-head" id="not-done">Where it stopped</h2>
+      <p class="col-prose">I stopped the project in October 2026 at the design stage, to put the time into a project I find more engaging. It stands as a design exercise without physical verification: the schematic and the layout are done, and nothing was assembled, powered or tested, so nothing on this page is a measured result.</p>
       <ul class="check col-prose">
         <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/><path d="M2 5 L4.5 7.5 L8 3"/></svg><span class="check__state">done</span>schematic capture</li>
         <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/><path d="M2 5 L4.5 7.5 L8 3"/></svg><span class="check__state">done</span>4-layer PCB layout (three revisions)</li>
-        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">in progress</span>power path bring-up</li>
-        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">in progress</span>ESP32-S3R8 firmware</li>
-        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">in progress</span>board bring-up</li>
+        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">not built</span>power path bring-up</li>
+        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">not finished</span>ESP32-S3R8 firmware</li>
+        <li><svg class="chk" viewBox="0 0 10 10" aria-hidden="true"><rect x=".5" y=".5" width="9" height="9"/></svg><span class="check__state">not built</span>board bring-up</li>
       </ul>
-      <p class="col-prose">The layout exists in three revisions{renders && ' (Figs. 4–6)'}. Nothing has been powered yet; no board has been assembled, and there are no photographs of a built board.</p>
+      <p class="col-prose">The layout exists in three revisions{renders && ' (Figs. 4–6)'}. No board was assembled or powered, so there are no photographs of a built board.</p>
 
     </div>
 
