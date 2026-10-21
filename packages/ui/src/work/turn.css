@@ -1,0 +1,8 @@
+/* ---------- 15. Prev / next: the next project's name, set wide on its own ground ---------- */
+.turn { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: var(--s6); border-top: 1px solid var(--ink); }
+.turn a { display: block; padding: var(--s3) var(--pad) var(--s4); font-size: clamp(1.5rem, 3vw, 2.9rem); line-height: .95; text-decoration: none; background: var(--g); color: var(--ink); min-height: 9rem; transition: background-color calc(.3s * var(--k-motion)) var(--ease); }
+.turn a:first-child { margin-left: calc(-1 * var(--pad)); }
+.turn .turn__next { margin-right: calc(-1 * var(--pad)); text-align: left; }
+.turn .mono { display: block; font: 400 var(--t-mono)/1.4 var(--f-mono); letter-spacing: 0; color: var(--dim); margin-bottom: var(--s2); }
+@media (hover: hover) { .turn a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .12em; } }
+.turn a:focus-visible { outline-offset: -8px; }   /* the ring goes inside the block, where the block's own ink contrasts */

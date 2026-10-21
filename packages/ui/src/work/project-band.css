@@ -1,0 +1,32 @@
+/* the work to choose from: a heading, then one band per project on its own ground */
+.choose__head { padding-bottom: var(--s3); }
+.choose__head h2 { font-size: var(--t-h2); line-height: 1; margin: var(--s1) 0 0; }
+.bands { list-style: none; margin: 0; padding: 0; }
+.band { position: relative; background: var(--g); color: var(--ink); }
+.band[data-ground="paper"] { box-shadow: inset 0 1px 0 var(--hair), inset 0 -1px 0 var(--hair); }
+.band__in { min-height: clamp(17rem, 36vh, 24rem); padding-block: var(--s4); align-items: center; }
+.band__text { grid-column: 1 / 8; align-self: center; }
+.band__no { font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); margin: 0 0 var(--s1); font-variant-numeric: tabular-nums; }
+.band__name { font-size: min(clamp(2rem, 4.6vw, 4.5rem), (100vw - 2rem) / 11); line-height: .92; margin: 0; }   /* second term: see --t-name */
+.band__name a { text-decoration: none; }
+.band__name a::after { content: ""; position: absolute; inset: 0; z-index: 1; }   /* the whole band opens the case study */
+.band__name a:focus-visible { outline: 0; }
+.band:has(.band__name a:focus-visible) { outline: 2px solid var(--ink); outline-offset: -8px; }
+@media (hover: hover) {
+  .band:hover .band__name a { text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .12em; }
+}
+.band__line { margin: var(--s2) 0 0; max-width: 58ch; }
+.band__meta { margin: var(--s2) 0 0; font: 400 var(--t-mono)/1.5 var(--f-mono); color: var(--dim); }
+.band__meta .status { color: var(--ink); }
+.band__fig { grid-column: 8 / 13; margin: 0; justify-self: end; width: 100%; display: flex; justify-content: flex-end; }
+.band__fig--env .envelope, .band__fig--spec .spec { width: min(100%, 26rem); }
+.band__fig--board img { width: min(120%, 40rem); max-width: none; margin-right: calc(-1 * var(--pad)); }
+.band__fig--photo img { width: auto; max-height: 20rem; }
+.band__fig--draw svg { width: min(100%, 24rem); height: auto; display: block; color: var(--ink); fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: square; }
+.band__fig svg path, .band__fig svg line, .band__fig svg rect { vector-effect: non-scaling-stroke; }
+.band__fig svg text { font-family: var(--f-mono); font-size: 14px; stroke: none; fill: var(--dim); }
+.band__fig svg .t-ink { fill: var(--ink); }
+.band__fig svg .s-axis { stroke: var(--dim); }
+.band__fig svg .f-hatch { fill: url(#hatch); }
+.band__fig svg .crisp { shape-rendering: crispEdges; }
+.band--team .band__in { min-height: clamp(13rem, 26vh, 18rem); }

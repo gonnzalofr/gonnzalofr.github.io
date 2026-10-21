@@ -1,0 +1,11 @@
+/* home breakpoints: they follow every home rule above, so they win at equal specificity */
+@media (max-width: 1199.98px) {
+  .intro__facts { grid-column: 1 / 10; grid-row: auto; margin-top: var(--s4); }
+  .intro__about { grid-row: auto; }
+}
+@media (max-width: 899.98px) {
+  .band__text, .band__fig { grid-column: 1 / -1; }
+  .band__fig { justify-content: flex-start; margin-top: var(--s3); }
+  .band__fig--board img { width: min(100%, 36rem); margin-right: 0; }
+  .band__in { min-height: 0; }
+}

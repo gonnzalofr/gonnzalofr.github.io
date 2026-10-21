@@ -1,11 +1,12 @@
 ---
-import '../styles/site.css';
+import '@portfolio/ui/styles.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Tweaks from '../components/Tweaks.astro';
 import type { Kind } from '../components/Nav.astro';
+import { grounds, type Ground } from '@portfolio/tokens';
 
-export type Ground = 'black' | 'paper' | 'sand' | 'walnut' | 'dusk';
+export type { Ground };
 
 interface Props {
   title: string;
@@ -29,7 +30,7 @@ const P = depth === 'abs' ? new URL('./', Astro.site).href : depth ? '../' : '';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const article = kind === 'work-case' || entry;
 const R = depth === 'abs' ? '/' : P;   // the 404 page is served at any depth on the user site: root-relative, like /_astro/, so it works on any host
-const theme = { black: '#120E0B', paper: '#F3EEE4', sand: '#E7DBC3', walnut: '#241B15', dusk: '#E8D2AE' }[ground];
+const theme = grounds[ground].g;
 ---
 <!DOCTYPE html>
 <html lang="en">

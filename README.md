@@ -15,7 +15,6 @@ src/pages/cv.astro                    one-page CV (also printed to public/assets
 src/pages/log/                        bench log: index + one page per entry in src/content/log/*.md
 src/layouts/Base.astro                the page shell: head, four-corner chrome, <main id="main">, Contact footer; `ground` prop picks the page's ground
 src/components/                       Nav.astro (Work · Notes · CV · Contact), Footer.astro (Contact), Tweaks.astro (dev only)
-src/styles/site.css                   the whole design system (tokens + grounds → grid → chrome → figures → home → breakpoints)
 src/scripts/site.js                   sticky-head height + scrollable-figure tab stops
 src/scripts/bits.js                   the TMDS bit field (same encoder port as tmds.js); not loaded by any page at the moment
 src/scripts/tmds.js                   the interactive TMDS encoder on the HDMI page (loaded by that page only)
@@ -25,9 +24,12 @@ tools/share-card.html                 the share card (every page's og:image), re
 astro.config.mjs                      build.format 'preserve' keeps the URLs work/x.html, notes.html, …
 
 At the repository root:
+packages/tokens/                      the design tokens in TypeScript (grounds, inks, type scale, space, motion) → generated tokens.css; contrast test
+packages/ui/src/styles.css            the whole design system's CSS: one file per component or concern, imported in cascade order
+tooling/tsconfig/                     shared strict tsconfig presets (base, node)
 tooling/check-site/check_site.py      the mechanical checker run on apps/web/dist/ (see below)
 tooling/check-site/dist_diff.py       the parity check: compares two builds page by page (see "Parity" below)
-turbo.json, pnpm-workspace.yaml       the task graph (build → check) and the workspace; package.json pins pnpm
+turbo.json, pnpm-workspace.yaml       the task graph (tokens build → site build → check; test, typecheck) and the workspace; package.json pins pnpm
 ```
 
 ## Run locally
@@ -38,9 +40,11 @@ pnpm install       # once, and after every pull that changes pnpm-lock.yaml
 pnpm dev           # dev server with live reload at http://localhost:4321/
 pnpm build         # writes apps/web/dist/
 pnpm check         # build, then tooling/check-site/check_site.py on apps/web/dist — the same check the deploy workflow runs
+pnpm test          # unit tests (the tokens' contrast and CSS generation)
+pnpm typecheck     # tsc on every TypeScript package
 ```
 
-Node 22 or newer and Python 3 are needed (the checker is a Python script with no dependencies). `corepack enable` writes the `pnpm` command next to Node's own; if that folder is not writable, run `npm install -g corepack` first or open the terminal as administrator once. Turbo caches builds in `.turbo/`: an unchanged `apps/web` is not rebuilt.
+Node 22.18 or newer (the tokens build runs TypeScript directly) and Python 3 are needed (the checker is a Python script with no dependencies). `corepack enable` writes the `pnpm` command next to Node's own; if that folder is not writable, run `npm install -g corepack` first or open the terminal as administrator once. Turbo caches builds in `.turbo/`: an unchanged `apps/web` is not rebuilt.
 
 ### Parity
 
@@ -51,7 +55,7 @@ pnpm golden        # once, on a commit you trust: build and save apps/web/dist t
 pnpm parity        # after a change: build, then compare apps/web/dist with .golden/dist; exit 1 on any difference
 ```
 
-`dist_diff.py` compares every page as an element tree (attribute order and whitespace ignored), the bundled `_astro/` files by content (their hashed file names ignored), and every other file byte for byte.
+`dist_diff.py` compares every page as an element tree (attribute order and whitespace ignored), the bundled `_astro/` files by content (their hashed file names ignored; stylesheets as rules, so comments and file boundaries don't count but rule order does), and every other file byte for byte.
 
 ## Deploy to GitHub Pages
 
@@ -61,7 +65,7 @@ The site is built by Astro and published by the workflow in `.github/workflows/d
 
    On a free GitHub plan, Pages needs the repository to be **public**, and a public repository publishes its whole git history, not only the current files. Read the history for anything private before switching it to public (or start the public repository from a fresh, single-commit history).
 2. Repository → Settings → Pages → Source: *GitHub Actions* (not "Deploy from a branch").
-3. Every push to `main` then runs the `Deploy` workflow: `pnpm install --frozen-lockfile`, then `pnpm check`, which builds the site and runs `tooling/check-site/check_site.py` on it (the job fails on any checker error, and nothing is published), then the `apps/web/dist/` folder is uploaded and deployed to <https://gonnzalofr.github.io/>. The workflow can also be started by hand from the Actions tab (*Run workflow*).
+3. Every push to `main` then runs the `Deploy` workflow: `pnpm install --frozen-lockfile`, then `pnpm turbo run typecheck test check`, which typechecks, runs the unit tests, builds the site and runs `tooling/check-site/check_site.py` on it (the job fails on any checker error, and nothing is published), then the `apps/web/dist/` folder is uploaded and deployed to <https://gonnzalofr.github.io/>. The workflow can also be started by hand from the Actions tab (*Run workflow*).
 
 `tooling/check-site/check_site.py` walks every `.html` in `apps/web/dist/`: tag balance, exactly one `h1`, `<html lang>`, `<main id="main">` and the skip link on every page, broken relative links, `src`s and `#fragment`s, `<img>` without `alt`, duplicate `id`s, banned strings (`[TODO]`, phone numbers, emoji, centered text, dark-scheme CSS), and the presence of `.nojekyll` and the favicon. British spelling and hype vocabulary are warnings. Exit code 1 on errors; warnings do not fail the build.
 
@@ -69,9 +73,9 @@ Strings that must never ship but must not be written in the repository either (y
 
 ## Editing
 
-- Grounds: every page passes `ground` to `Base` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the comment at the top of `site.css`. The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground.
+- Grounds: every page passes `ground` to `Base` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the header of the generated `tokens.css` (and asserted by `pnpm test`). The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground.
 - Home bands: each project on home is an `<li class="band" data-ground="…">` whose name link covers the whole band. A new project gets a band in `index.astro` (and a case study with the same ground).
-- Tweaks bar: under `pnpm dev` a small "tweaks" button (bottom left) adjusts name size, width and weight, text size, density, motion and warmth live, and "Copy values" gives CSS to paste into section 1 of `site.css`. It is never rendered in a build.
+- Tweaks bar: under `pnpm dev` a small "tweaks" button (bottom left) adjusts name size, width and weight, text size, density, motion and warmth live, and "Copy values" gives the values as CSS; they belong in `packages/tokens/src/tokens.ts`. It is never rendered in a build.
 - Copy lives directly in the `.astro` pages. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
 - Every figure is inline SVG drawn from real numbers, or an `<img class="fig__img">` for photographs and renders; captions start with `<span class="fig__no">Fig. N</span> —`.
 - Status is only ever the dossier's words plus the small open square (`<span class="status">in progress</span>`); never colour.
@@ -80,6 +84,7 @@ Strings that must never ship but must not be written in the repository either (y
 - Placeholder images never ship: `src/lib/placeholder.ts` leaves out every figure whose file is still one of the five labeled placeholders, and a log entry stays unpublished until its images are real. Saving the real file is the only step; the next build shows it. The checker fails the build if a placeholder reaches a page.
 - Type: Anybody (variable width and weight) for everything you read — build names and section heads at weight 800 and width 150, prose at 400 and width 100 — and Azeret Mono for specs, labels, captions and figure text. Both are self-hosted latin subsets in `public/fonts/`; Anybody borrows Azeret Mono's × (its own is dot-sized).
 - Layout uses a fixed set of placement classes (`.col-margin`, `.col-head`, `.col-prose`, `.fig--right`, `.fig--bleed`, …). Don't set `grid-column` anywhere else.
+- Styles: a new component's CSS goes in its own file under `packages/ui/src/` and is imported in `styles.css` at the place its rules belong in the cascade (the list there is in cascade order, not alphabetical). Token values (colors, sizes, spacing) live only in `packages/tokens/src/tokens.ts`.
 
 ## Photos and renders
 

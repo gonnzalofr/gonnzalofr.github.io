@@ -1,0 +1,5 @@
+/* a short list of facts in mono: the intro's, and the Lapyx 4 numbers on the Daedalus band */
+.intro__facts, .spec { margin: 0; font: 400 var(--t-mono)/1.5 var(--f-mono); border-top: 1px solid var(--ink); }
+.intro__facts > div, .spec > div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: .75rem; padding-block: .55rem; border-bottom: 1px solid var(--hair); }
+.intro__facts dt, .spec dt { color: var(--dim); }
+.intro__facts dd, .spec dd { margin: 0; }

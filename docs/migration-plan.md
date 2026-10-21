@@ -1,11 +1,16 @@
 # Migration plan: Turborepo + React
 
-Status, 21 October 2026: **phases 0 and 1 done** (the parity tool and the pnpm + Turborepo workspace, with the site unchanged byte for byte). Decided: option A (Astro + React), pnpm.
+Status, 21 October 2026: **phases 0–2 done** (the parity tool; the pnpm + Turborepo workspace; tokens and the CSS split), each with the built site identical to the one before it. Decided: option A (Astro + React), pnpm.
 
 Notes from phase 1:
 - The toolchain (Astro 7.3.2, Vite 8.3.0, rolldown 1.2.8, lightningcss, postcss, the Astro compiler) is pinned in `pnpm-workspace.yaml` to the versions the npm lockfile had. A fresh resolve picked rolldown 1.2.14, whose minifier changes the three.js chunks by 149 bytes. Bumping them is its own commit, followed by `pnpm golden`.
 - esbuild's install script is denied explicitly (`allowBuilds`); pnpm 12 otherwise fails a frozen install in CI.
 - The shared `tooling/tsconfig` moves to phase 2, where the first package that needs it appears.
+
+Notes from phase 2:
+- Tests use Node's built-in runner (`node --test`), and the tokens build runs TypeScript directly through Node's type stripping, so the tokens package needs no build tool. Vitest arrives in phase 4 with the React render tests. TypeScript is 7.0.2 (the native compiler).
+- `apps/web` is not typechecked yet: `@astrojs/check` comes with the React work in phase 4.
+- `pnpm dev` builds the tokens first (turbo `dev` depends on `^build`). A change to `tokens.ts` while the dev server runs needs `pnpm --filter @portfolio/tokens build`.
 
 ## 0. Where we actually are
 
@@ -106,15 +111,11 @@ export const fonts = { sans: 'Anybody', mono: 'Azeret Mono' };
 
 - A build step writes `tokens.css` (the custom properties and the `[data-ground]` rules), so the CSS and the TypeScript can't drift apart.
 - `Base.astro`'s hard-coded `theme-color` map and the Tweaks bar's palette both read from it.
-- **A test checks the contrast of every ink on every ground** against the AA thresholds in the `site.css` header comment, so a palette change that breaks AA fails `turbo test`.
+- **A test checks the contrast of every ink on every ground** against the AA thresholds (the generated `tokens.css` header shows the measured values), so a palette change that breaks AA fails `pnpm test`.
 
-**CSS stays plain CSS**, not Tailwind or CSS-in-JS. The class names *are* the system: print rules, `:has()` selectors across components, and the checker all depend on them. Utility classes would also turn "big or small, nothing in between" into "any size you like". `site.css` is split into one file per component next to its `.tsx`, in cascade layers:
+**CSS stays plain CSS**, not Tailwind or CSS-in-JS. The class names *are* the system: print rules, `:has()` selectors across components, and the checker all depend on them. Utility classes would also turn "big or small, nothing in between" into "any size you like". `site.css` is split into one file per component (in `packages/ui/src/<group>/`, where each `.tsx` will sit beside its CSS in phase 4), imported by `packages/ui/src/styles.css` **in the original cascade order**.
 
-```css
-@layer tokens, base, layout, components, figures, pages, print;
-```
-
-Every rule stays the same; only its location changes. The diff tool (§6) proves that.
+*Changed in phase 2:* the first draft put the files in cascade layers (`@layer tokens, base, …`). That was dropped, because layer order beats specificity: a later layer's single-class rule would override an earlier layer's more specific one, which changes rendering. Instead the split is contiguous, with no rule moved relative to another. Breakpoints, motion and print stay as their own files at the end, as they were. The diff tool (§6) compares stylesheets rule by rule, in order, so it proves this.
 
 ## 4. Component inventory
 
@@ -234,7 +235,7 @@ Each phase ends with a **byte-for-byte (normalized DOM) match against the curren
 |---|---|---|
 | **0. Baseline** ✓ | Build today's site and store `dist/` as `golden/` (gitignored). Write `dist-diff`. | `dist-diff golden dist` passes on an unchanged build. |
 | **1. Monorepo shell** ✓ | pnpm + Turborepo; move the Astro app to `apps/web` unchanged; update CI (`pnpm check` = turbo build → check). | Zero diff; deploy workflow green. |
-| **2. Tokens + CSS split** | Shared `tooling/tsconfig`; `packages/tokens`, generated `tokens.css`, contrast test; split `site.css` into per-component layered files. | Zero diff on HTML; computed styles unchanged (spot-check every page on every breakpoint in the browser pane). |
+| **2. Tokens + CSS split** ✓ | Shared `tooling/tsconfig`; `packages/tokens`, generated `tokens.css`, contrast test; split `site.css` into per-component files in cascade order (no layers, see §3). | Zero diff on HTML; computed styles unchanged (spot-check every page on every breakpoint in the browser pane). |
 | **3. Content package** | Extract `person`, `projects`, `builds`, `curriculum`, `cv` with Zod; the existing `.astro` pages read from it. | Zero diff. Project names appear once in `src/`. |
 | **4. React components** | Add `@astrojs/react` + MDX. Build the `ui` primitives (§4.1–4.4) with render tests. Convert pages one at a time, simplest first: 404 → log → work index → CV → notes → home → case studies (MDX + `figures`). | Zero diff after each page (the diff tool lists any differences that are accepted on purpose, such as SVG self-closing). |
 | **5. Islands** | `packages/tmds` + tests; `TmdsEncoder`, `BoardViewer`, `Tweaks` as React islands. Measure JS weight; decide React vs. `preact/compat` for islands. | Demo and board behave as before with and without JS; the checker passes; no new JS on other pages. |

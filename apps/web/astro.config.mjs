@@ -13,7 +13,7 @@ export default defineConfig({
     build: {
       // keep site.js as a hashed external file instead of inlining it into every page (it is under Vite's 4 kB inline limit)
       assetsInlineLimit: 0,
-      // ship site.css as written: the minifier rewrites `@media (max-width: …)` to range syntax
+      // ship the stylesheet (packages/ui/src/styles.css) as written: the minifier rewrites `@media (max-width: …)` to range syntax
       // (`(width<=…)`), which older Safari/Chrome/Firefox do not understand, so the breakpoints would stop applying there
       cssMinify: false,
     },

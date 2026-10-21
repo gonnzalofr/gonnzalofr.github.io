@@ -1,0 +1,4 @@
+/* log entries and case-study bodies: measure and spacing after figures */
+.entry__text > :not(.fig) { max-width: 64ch; }
+.entry__body { margin-top: var(--s5); }
+.prose-block > .fig + h2, .prose-block > .pull + h2, .prose-block > .fig + .pull { margin-top: var(--s3); }

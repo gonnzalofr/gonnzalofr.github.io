@@ -9,6 +9,9 @@ What counts as the same:
   bundler names a file after the component that imports it and a hash changes whenever any input changes.
 - The bundled assets themselves are compared by content (with their own /_astro/ references normalized the same way),
   as a multiset: a renamed file with the same content is not a difference; changed content is.
+- Stylesheets are compared as rules: comments dropped and whitespace collapsed, so splitting a stylesheet into files
+  or moving a comment is not a difference, but any change to a selector, a declaration or the order of rules is
+  (the cascade depends on that order). A changed stylesheet is reported with the first place it differs.
 - Every other file (public/ copies: images, fonts, PDF, .nojekyll) is compared byte for byte at the same path."""
 import argparse, hashlib, os, re, sys
 from collections import Counter
@@ -87,11 +90,31 @@ def diff_page(a, b, maxn):
     return out
 
 
-def asset_digest(path):
+CSS_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+
+
+def norm_css(s):
+    s = " ".join(CSS_COMMENT.sub(" ", s).split())
+    return re.sub(r"\s*([{};])\s*", r"\1", s)
+
+
+def asset_text(path):
     with open(path, "rb") as f: data = f.read()
-    try: data = norm_refs(data.decode("utf-8")).encode("utf-8")
-    except UnicodeDecodeError: pass
-    return hashlib.sha256(data).hexdigest()[:16]
+    try: text = norm_refs(data.decode("utf-8"))
+    except UnicodeDecodeError: return data
+    return norm_css(text) if path.endswith(".css") else text
+
+
+def asset_digest(path):
+    data = asset_text(path)
+    return hashlib.sha256(data if isinstance(data, bytes) else data.encode("utf-8")).hexdigest()[:16]
+
+
+def first_css_difference(a, b):
+    x, y = asset_text(a), asset_text(b)
+    i = next((i for i, (p, q) in enumerate(zip(x, y)) if p != q), min(len(x), len(y)))
+    lo = max(0, i - 80)
+    return f"      - ...{x[lo:i + 80]}...\n      + ...{y[lo:i + 80]}..."
 
 
 def main():
@@ -129,8 +152,14 @@ def main():
     if ca != cb:
         by_a = {asset_digest(v): k for k, v in astro_a.items()}
         by_b = {asset_digest(v): k for k, v in astro_b.items()}
-        for h in sorted((ca - cb).keys()): report(f"ASSET    only in golden: {by_a[h]}")
-        for h in sorted((cb - ca).keys()): report(f"ASSET    only in new:    {by_b[h]}")
+        only_a, only_b = sorted((ca - cb).keys()), sorted((cb - ca).keys())
+        for h in only_a: report(f"ASSET    only in golden: {by_a[h]}")
+        for h in only_b: report(f"ASSET    only in new:    {by_b[h]}")
+        css_a = [by_a[h] for h in only_a if by_a[h].endswith(".css")]
+        css_b = [by_b[h] for h in only_b if by_b[h].endswith(".css")]
+        if len(css_a) == 1 and len(css_b) == 1:
+            print("    first difference in the stylesheet (comments and whitespace removed):\n"
+                  + first_css_difference(astro_a[css_a[0]], astro_b[css_b[0]]))
 
     pages = sum(k.endswith(".html") for k in pa)
     print(f"{pages} page(s), {len(pa) - pages} other file(s), {len(astro_a)} bundled asset(s) compared: "

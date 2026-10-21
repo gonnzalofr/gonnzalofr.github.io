@@ -1,0 +1,7 @@
+/* label beside text, one row each (CV skills and languages) */
+.kit { margin-bottom: var(--s4); }
+.kit__row { display: grid; grid-template-columns: 12rem 1fr; border-top: 1px solid var(--hair); padding-block: var(--s2); }
+.kit__row:last-of-type { border-bottom: 1px solid var(--hair); }
+.kit__label { font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); margin: 0; padding: .3rem var(--s2) 0 0; }
+.kit__text { margin: 0; }
+.kit__parts { font: 400 var(--t-mono)/1.6 var(--f-mono); color: var(--dim); margin: var(--s2) 0 0; }

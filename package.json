@@ -4,12 +4,14 @@
   "type": "module",
   "packageManager": "pnpm@12.10.1",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "check": "turbo run check",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
     "parity": "turbo run build && python3 tooling/check-site/dist_diff.py .golden/dist apps/web/dist",
     "golden": "node -e \"require('fs').rmSync('.golden',{recursive:true,force:true})\" && turbo run build && node -e \"require('fs').cpSync('apps/web/dist','.golden/dist',{recursive:true})\""
   },

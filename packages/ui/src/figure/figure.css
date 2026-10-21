@@ -1,0 +1,27 @@
+/* ---------- 9. Figures: drawn in the page's ink on the page's ground ---------- */
+.fig { margin-block: var(--s5); container-type: inline-size; }
+.fig__scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--dim) transparent; }
+.tmds__why { display: none; white-space: pre-line; }
+@container (max-width: 739.98px) {
+  .fig:has(.fig__scroll) figcaption::after { content: " · scrolls sideways"; }
+  .tmds__why { display: block; margin-top: .25rem; }
+}
+.fig svg { display: block; height: auto; width: 100%; color: var(--ink); fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: square; }
+.fig svg { min-width: 740px; max-width: 1000px; }
+.fig svg path, .fig svg line, .fig svg rect, .fig svg circle { vector-effect: non-scaling-stroke; }
+.fig svg text { font-family: var(--f-mono); font-size: 13px; stroke: none; fill: var(--dim); font-variant-numeric: lining-nums tabular-nums; }
+.fig svg .t-ink { fill: var(--ink); }
+.fig svg .t-ramp { fill: var(--ink); }
+.fig svg .t-state { font-size: 14px; fill: var(--ink); }
+.fig svg .s-ramp, .fig svg .s-cu { stroke: var(--ink); }
+.fig svg .s-rule { stroke: var(--hair); }
+.fig svg .s-axis { stroke: var(--dim); }
+.fig svg .f-cu { fill: var(--ink); stroke: none; }
+.fig svg .f-hatch { fill: url(#hatch); }
+.fig svg .crisp { shape-rendering: crispEdges; }
+.fig svg .geo { shape-rendering: geometricPrecision; }
+figcaption { font-size: var(--t-mono); line-height: 1.5; color: var(--dim); margin-top: var(--s2); max-width: 70ch; }
+.fig__no { color: var(--ink); }
+.fig img.fig__img { display: block; width: auto; max-width: 100%; height: auto; }
+.fig img.fig__img--portrait { width: auto; max-width: 100%; max-height: min(80vh, 44rem); }
+.plate { max-width: 800px; }

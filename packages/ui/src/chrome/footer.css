@@ -1,0 +1,7 @@
+/* ---------- 16. Contact (the footer of every page) ---------- */
+.foot { margin-top: var(--s6); padding-block: 0 var(--s4); }
+main:has(.turn) ~ .foot { margin-top: 0; }
+.foot__h { font-size: var(--t-h2); line-height: 1; margin: var(--s2) 0 var(--s3); grid-column: 1 / 13; }
+.foot .meta { margin-top: var(--s4); }
+.foot .meta a { text-decoration-color: var(--dim); }
+.foot__colophon { grid-column: 1 / 13; display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--s2); font: 400 var(--t-mono)/1.5 var(--f-mono); color: var(--dim); margin: var(--s5) 0 0; }

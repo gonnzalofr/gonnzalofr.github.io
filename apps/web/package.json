@@ -10,6 +10,8 @@
     "check": "python3 ../../tooling/check-site/check_site.py dist"
   },
   "dependencies": {
+    "@portfolio/tokens": "workspace:*",
+    "@portfolio/ui": "workspace:*",
     "astro": "7.3.2",
     "three": "^0.186.1"
   }

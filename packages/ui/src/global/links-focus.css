@@ -1,0 +1,7 @@
+/* ---------- 3. Links, focus ---------- */
+a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; text-decoration-color: var(--dim); transition: text-decoration-color calc(.16s * var(--k-motion)) ease; }
+@media (hover: hover) { a:hover { text-decoration-color: currentColor; } }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 1px; }
+.skip { position: absolute; left: -9999px; top: 0; }
+.skip:focus-visible { position: fixed; left: .5rem; top: .5rem; z-index: 50; background: var(--g); color: var(--ink); padding: .5rem .75rem; border: 1px solid var(--ink); font: 400 var(--t-mono)/1 var(--f-mono); text-decoration: none; }
+html { scroll-padding-top: calc(var(--head-h, 52px) + 1rem); }

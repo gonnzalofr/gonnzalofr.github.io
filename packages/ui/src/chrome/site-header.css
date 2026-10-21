@@ -1,0 +1,11 @@
+/* ---------- 5. Four-corner chrome ---------- */
+.head { position: sticky; top: 0; z-index: 20; background: var(--g); color: var(--ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; column-gap: var(--gut);
+  padding: .85rem var(--pad) .8rem; max-width: 1680px; margin-inline: auto; font: 500 var(--t-small)/1.2 var(--f-sans); font-stretch: 112%; }
+.head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; border-bottom: 1px solid var(--hair); }
+.head a { text-decoration: none; }
+@media (hover: hover) { .head a:hover { text-decoration: underline; text-decoration-color: currentColor; } }
+.head__name { font-weight: 600; justify-self: start; padding-block: .5rem; }
+.head__nav { display: flex; align-items: center; gap: 0 1.4rem; flex-wrap: wrap; }
+.head__nav a { padding-block: .5rem; }
+.head__nav a[aria-current] { text-decoration: underline; text-decoration-color: currentColor; }
+.head__end { margin-left: auto; }

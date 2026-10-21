@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - tooling/*
 
 # esbuild's install script only checks its platform binary, which pnpm already installs as an optional dependency.
 # Denying it explicitly keeps `pnpm install --frozen-lockfile` from failing in CI on an unapproved build script.

@@ -1,0 +1,7 @@
+/* entries with a mono kicker, a title and a paragraph (smaller builds, the log index) */
+.nlist { list-style: none; margin: 0; padding: 0; }
+.nlist li { border-top: 1px solid var(--hair); padding-block: var(--s3); }
+.nlist li > p { max-width: 64ch; }
+.nlist__kicker { font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); margin: 0; }
+.nlist__title { font: 700 1.15rem/1.3 var(--f-sans); font-stretch: 112%; margin: .35rem 0 .5rem; }
+.nlist__title a { text-decoration-color: var(--dim); }
