@@ -24,6 +24,10 @@ export function tokensCss(): string {
   const ordered = [...groundNames].sort((a, b) => Number(grounds[a].ink === 'dark') - Number(grounds[b].ink === 'dark'));
   const groundRule = (g: Ground) =>
     `[data-ground="${g}"] { --g: var(--g-${g}); --ink: var(--ink-${grounds[g].ink}); --dim: var(--dim-${grounds[g].ink}); }`;
+  // The page's scroll bar belongs to the viewport, which takes it from html; html has no ground of its own (the page
+  // shell sets data-ground on body), so each rule reads it from body. Thumb in the dim ink, track the ground itself.
+  const scrollRule = (g: Ground) =>
+    `html:has(> body[data-ground="${g}"]) { ${grounds[g].ink === 'light' ? 'color-scheme: dark; ' : ''}scrollbar-color: var(--dim-${grounds[g].ink}) var(--g-${g}); }`;
 
   return `/* tokens.css — generated from packages/tokens/src/tokens.ts by \`pnpm build\`; edit the TypeScript, not this file.
    Contrast of each ink on each ground where it is used: ${contrastSummary()}.
@@ -43,5 +47,7 @@ export function tokensCss(): string {
 /* grounds: one per page (the page shell sets data-ground); on home, one per project band */
 ${ordered.map(groundRule).join('\n')}
 [data-ground] { --hair: ${hairline}; }   /* decorative hairlines only */
+/* the page's scroll bar on the page's ground; the dark grounds also switch the browser's own parts to dark */
+${groundNames.map(scrollRule).join('\n')}
 `;
 }
