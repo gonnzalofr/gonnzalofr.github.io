@@ -1,4 +1,4 @@
-# Build the Astro site, run the mechanical checker, and publish dist/ to GitHub Pages.
+# Build the Astro site (apps/web, through Turborepo), run the mechanical checker, and publish apps/web/dist/ to GitHub Pages.
 # Repository must be the user site gonnzalofr.github.io (no `base` in astro.config.mjs),
 # with Settings -> Pages -> Source set to "GitHub Actions".
 name: Deploy
@@ -21,24 +21,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # pnpm at the version in package.json's "packageManager" field
+      - uses: pnpm/action-setup@v6
+
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      - run: npm run build
-
-      # exits 1 on any ERROR, which fails the job before anything is uploaded
-      - run: python3 tools/check_site.py dist
+      # turbo runs build, then tooling/check-site/check_site.py on apps/web/dist (with the runner's python3);
+      # the checker exits 1 on any ERROR, which fails the job before anything is uploaded
+      - run: pnpm check
         env:
           # optional repository secret: a regex of private strings (your own phone numbers) that must never ship
           CHECK_PRIVATE: ${{ secrets.CHECK_PRIVATE }}
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: dist
+          path: apps/web/dist
 
   deploy:
     needs: build
