@@ -1,0 +1,2 @@
+/* status is only ever words plus the small open square; never color */
+.status::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: .5em; border: 1px solid currentColor; vertical-align: 0; }

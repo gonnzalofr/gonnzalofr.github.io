@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+import { longDate, isoDate } from '@portfolio/content';
+import { isPublished } from '../../lib/placeholder';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('log', isPublished);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base
+  title={`${entry.data.title} — Gonzalo Ferrero Martín`}
+  description={entry.data.summary}
+  kind="log"
+  depth={1}
+  entry
+  ground="paper"
+>
+<main id="main">
+
+  <section class="page cs">
+    <p class="kicker col-head">Log · <time datetime={isoDate(entry.data.date)}>{longDate(entry.data.date)}</time></p>
+    <h1 class="col-head">{entry.data.title}</h1>
+    <p class="deck col-prose">{entry.data.summary}</p>
+  </section>
+
+  <section class="page">
+    <div class="prose-block col-full entry__body">
+      <div class="fig--right entry__text">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+</main>
+</Base>

@@ -1,0 +1,5 @@
+/* ---------- 10. Pull quote, margin note ---------- */
+.pull { align-self: start; margin-block: var(--s4); font: 400 clamp(1.35rem, 2vw, 1.75rem)/1.2 var(--f-sans); font-stretch: 112%; letter-spacing: -.015em; text-wrap: balance; }
+.pull__kicker { font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); letter-spacing: 0; margin: 0 0 var(--s1); }
+.pull p { margin: 0; }
+.note { font-size: var(--t-mono); line-height: 1.55; color: var(--dim); margin: .35rem 0 0; font-variant-numeric: lining-nums tabular-nums; }

@@ -1,0 +1,45 @@
+/* ---------- 18. Breakpoints ---------- */
+@media (max-width: 1199.98px) {
+  .col-prose { grid-column: 1 / 10; }
+  .col-margin { grid-column: 1 / 10; }
+  .prose-block > .col-margin { grid-row: auto; margin-bottom: var(--s2); }
+  .pull { grid-column: 1 / 10; }
+  .fig--right { grid-column: 1 / 13; }
+  .meta__cell:nth-child(1), .meta__cell:nth-child(3) { grid-column: 1 / 7; }
+  .meta__cell:nth-child(2), .meta__cell:nth-child(4) { grid-column: 7 / 13; }
+  .row__title { grid-column: 2 / 10; } .row__meta { grid-column: 10 / 13; }
+}
+@media (max-width: 899.98px) {
+  .page { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  @supports not (grid-template-columns: subgrid) { .prose-block, .row, .meta { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .col-margin, .col-head, .col-prose, .col-full, .col-a, .col-b, .fig--right, .fig--bleed, .pull, .prose-block, .row, .meta, .sec__reading, .foot__h, .foot__colophon { grid-column: 1 / -1; }
+  .meta__cell:nth-child(odd) { grid-column: 1 / 4; } .meta__cell:nth-child(even) { grid-column: 4 / 7; }
+  .row { grid-template-columns: 2.5rem minmax(0, 1fr); column-gap: var(--gut); }
+  .row__no { grid-column: 1 / 2; } .row__title { grid-column: 2 / 3; }
+  .row__meta { grid-column: 2 / 3; padding-top: 0; }
+  .cur__q { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :root { --head-h: 88px; }
+  .head { grid-template-columns: minmax(0, 1fr); row-gap: .1rem; padding-block: .6rem .5rem; }
+  .head__nav { gap: 0 1rem; }
+  .turn { grid-template-columns: minmax(0, 1fr); }
+  .turn a:first-child, .turn .turn__next { margin-inline: calc(-1 * var(--pad)); }
+}
+@media (max-width: 599.98px) {
+  :root { --s6: 3.5rem; --s7: 5rem; --s5: 2.5rem; --head-h: 0px; }
+  .head { position: static; }
+  .page { grid-template-columns: minmax(0, 1fr); }
+  @supports not (grid-template-columns: subgrid) { .prose-block, .row, .meta { grid-template-columns: minmax(0, 1fr); } }
+  .meta__cell:nth-child(odd), .meta__cell:nth-child(even) { grid-column: 1 / -1; }
+  .rec__entry, .kit__row { grid-template-columns: 1fr; }
+  .rec__date { padding: 0 0 .15rem; }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .row__no, .row__title, .row__meta { grid-column: 1 / -1; }
+  .cur__q { grid-template-columns: minmax(0, 1fr); }
+  .foot__colophon { flex-direction: column; }
+  h1 .nb { white-space: normal; }
+  /* the name (home, CV) breaks into its three words here, so it can be set larger than other titles: the widest word,
+     "Ferrero" (7em at width 150), sets the size; from 600px up the last two words share a line and --t-name applies */
+  .intro h1, .cv h1 { font-size: calc(min(3rem, (100vw - 2rem) / 7.5) * var(--k-name)); }
+  .envelope__x { display: none; }
+  .envelope__lbl--bottom { top: auto; bottom: 0; margin: 0 0 0 .5rem; padding-block: 0; }
+}

@@ -1,0 +1,8 @@
+/* ---------- 8. Metadata row (case studies, notes, footer) ---------- */
+.meta { border-top: 1px solid var(--ink); padding-block: var(--s2); row-gap: var(--s3); margin-top: var(--s5); font-size: var(--t-mono); line-height: 1.55; }
+.meta__cell:nth-child(1) { grid-column: 1 / 4; } .meta__cell:nth-child(2) { grid-column: 4 / 7; }
+.meta__cell:nth-child(3) { grid-column: 7 / 10; } .meta__cell:nth-child(4) { grid-column: 10 / 13; }
+.meta dt { color: var(--dim); margin-bottom: .3rem; }
+.meta dd { margin: 0; overflow-wrap: anywhere; }
+.meta dd a { display: inline-block; padding-block: .125rem; }
+.meta a[href^="mailto:"], .meta a[href^="http"] { font-family: var(--f-sans); font-size: 1.08em; }

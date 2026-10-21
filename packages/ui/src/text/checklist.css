@@ -1,0 +1,6 @@
+/* a checklist of states in words, with a drawn box or tick (case studies: "What is not done") */
+.check { list-style: none; padding: 0; margin: 0 0 var(--s3); font: 400 var(--t-mono)/1.6 var(--f-mono); }
+.check li { padding: .3rem 0 .3rem 1.25rem; text-indent: -1.25rem; break-inside: avoid; border-top: 1px solid var(--hair); }
+.check li:last-child { border-bottom: 1px solid var(--hair); }
+.chk { width: 11px; height: 11px; vertical-align: -1px; margin-right: .55rem; stroke: currentColor; fill: none; stroke-width: 1.2; shape-rendering: crispEdges; }
+.check__state { color: var(--dim); margin-right: .75rem; display: inline-block; min-width: 7.5em; text-indent: 0; }

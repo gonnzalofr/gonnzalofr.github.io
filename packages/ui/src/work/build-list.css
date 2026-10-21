@@ -1,0 +1,6 @@
+/* the smaller builds as a line of links */
+.builds { padding-block: var(--s4) 0; }
+.builds__list { list-style: none; margin: var(--s1) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 2.4rem; }
+.builds__list li { display: flex; flex-direction: column; padding-block: .3rem; }
+.builds__list a { font: 700 1.15rem/1.25 var(--f-sans); font-stretch: 112%; text-decoration-color: var(--dim); }
+.builds__list span { font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); }

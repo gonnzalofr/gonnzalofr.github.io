@@ -1,0 +1,43 @@
+/* ---------- 20. Print: ink on white, whatever the ground ---------- */
+@media print {
+  :root, [data-ground] { --g: #fff; --ink: #000; --dim: #444; }
+  body { background: #fff; color: #000; }
+  .head { position: static; }
+  .head::after, .skip, .head__nav { display: none; }
+  .fig__scroll { overflow: visible; }
+  .fig svg { min-width: 0; }
+  a { color: inherit; text-decoration: none; }
+  .fig, .row, .rec__entry, .meta, .pull { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .turn, .tmds__ctl, .board__bar { display: none; }
+  .envelope, .status::before { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .head__name::after { content: " · gonnzalofr.github.io"; }
+  .col-prose a[href^="http"]::after { content: " (" attr(href) ")"; font: 400 8pt/1 var(--f-mono); color: #444; }
+  .board__stage.is-live .board__poster { visibility: visible; } .board__stage canvas { display: none; }
+}
+/* CV print (cv.html): no chrome or footer, A4 with 12mm margins, one page at 10pt */
+@page { size: A4; margin: 12mm; }
+@media print {
+  body:has(.cv) .head, body:has(.cv) .foot, .cv__pdf, .cv .sec__reading { display: none; }
+  .cv { font-size: 10pt; line-height: 1.22; }
+  .cv .page { display: block; max-width: none; padding-inline: 0; }
+  .cv .col-prose { max-width: none; }
+  .cv .cs { padding-top: 0; }
+  .cv .kicker { font-size: 7.5pt; margin: 0; }
+  .cv h1 { font-size: 20pt; margin: 2pt 0 3pt; }
+  .cv .deck { font-size: 10pt; margin: 0; }
+  .cv .meta { display: flex; flex-wrap: wrap; gap: 2pt 14pt; margin-top: 3pt; padding-block: 3pt; font-size: 7.5pt; line-height: 1.3; border-bottom: 1px solid #999; }
+  .cv .meta dt { font-size: 7pt; margin-bottom: 0; }
+  .cv .sec { margin-top: 3pt; }
+  .cv .sec__rule { display: none; }
+  .cv h2 { font-size: 11pt; margin: 3pt 0 0; }
+  .cv .rec { margin-bottom: 0; }
+  .cv .rec__entry { grid-template-columns: 100pt 1fr; padding-block: 1pt; border-top: 0; }
+  .cv .rec__date { font-size: 7.5pt; padding: 1pt 6pt 0 0; }
+  .cv .rec__role { font-size: 10pt; line-height: 1.2; }
+  .cv .rec__org { margin-top: 0; }
+  .cv .kit { margin-bottom: 0; }
+  .cv .kit__row { grid-template-columns: 100pt 1fr; padding-block: 1pt; border: 0; }
+  .cv .kit__label { font-size: 7pt; padding-top: 2pt; }
+  .cv .kit__parts { font-size: 7.5pt; line-height: 1.3; margin-top: 2pt; }
+}

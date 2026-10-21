@@ -1,0 +1,25 @@
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { font-kerning: normal; -webkit-font-smoothing: antialiased; text-size-adjust: 100%; }
+body { margin: 0; background: var(--g); color: var(--ink); font: 400 var(--t-body)/1.6 var(--f-sans); font-stretch: 100%; font-variant-numeric: lining-nums proportional-nums; }
+body[data-ground="black"], body[data-ground="walnut"] { line-height: 1.66; }   /* light type on a dark ground reads heavier: a little more air */
+main { display: block; }
+h1, h2, h3, h4 { text-wrap: balance; hyphens: none; margin: 0; }
+p { margin: 0 0 var(--s3); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+img { max-width: 100%; height: auto; display: block; }
+sup { line-height: 0; }
+code { font: inherit; }
+.mono, .meta, figcaption, table, .sec__reading, .kicker, .note { font-family: var(--f-mono); font-variant-numeric: lining-nums tabular-nums; }
+/* Azeret Mono's contextual alternates turn the x of 0x00 into ×, and its ligatures join f to i, t, f and j (first reads "fırst");
+   the font shorthand resets the setting, so it is set on every element. Anybody's own fi/fl ligatures look the same either way. */
+* { font-feature-settings: "calt" 0, "liga" 0; }
+.col-prose .mono, .deck .mono, .row__title .mono, .nlist .mono, .rec .mono, .kit__text .mono, .pull .mono, .turn .mono { font-size: .86em; }
+.col-prose .mono, .deck .mono, .row__title .mono, .nlist .mono, .rec .mono, .kit__text .mono, .turn .mono { white-space: nowrap; }
+.nc { text-transform: none; }
+.nb { white-space: nowrap; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* the wide voice: build names, page titles, section heads */
+.wide, h1, h2.col-head, .turn a, .row h3, .band__name, .foot__h { font-family: var(--f-sans); font-weight: var(--name-wght); font-stretch: calc(var(--name-wdth) * 1%); letter-spacing: -.02em; }

@@ -1,0 +1,7 @@
+/* ---------- 7. Sections ---------- */
+.sec { margin-top: var(--s6); }
+.sec__rule { border: 0; border-top: 1px solid var(--hair); margin: 0 0 var(--s2); height: 0; }
+.sec__reading { font-size: var(--t-mono); line-height: 1.4; color: var(--dim); margin: 0; grid-column: 1 / 13; }
+h2.col-head { font-size: var(--t-h2); line-height: 1; margin: var(--s5) 0 var(--s3); }
+.sec > h2.col-head { margin-top: var(--s2); }
+h3 { font: 700 1.25rem/1.25 var(--f-sans); font-stretch: 112%; }

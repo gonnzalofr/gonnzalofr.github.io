@@ -1,0 +1,4 @@
+/* ---------- 11. Lists ---------- */
+.col-prose > ul:not(.check), .entry__text > ul:not(.check) { list-style: none; padding-left: 1.25em; margin: 0 0 var(--s3); }
+.col-prose > ul:not(.check) li, .entry__text > ul:not(.check) li { position: relative; }
+.col-prose > ul:not(.check) li::before, .entry__text > ul:not(.check) li::before { content: "–"; position: absolute; left: -1.25em; color: var(--dim); }

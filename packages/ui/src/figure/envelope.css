@@ -1,0 +1,14 @@
+/* the XSIM frame inside its 800×525 timing envelope: blanking hatched in the dim ink */
+.envelope { container-type: inline-size; aspect-ratio: 800 / 525; position: relative; max-width: 800px; border: 1px solid var(--dim); background: repeating-linear-gradient(45deg, transparent 0 10px, var(--dim) 10px 11px); }
+.envelope img { position: absolute; left: 0; top: 0; width: 80%; height: calc(480 / 525 * 100%); image-rendering: pixelated; }
+.envelope__lbl { position: absolute; margin: 0; font: 400 var(--t-mono-s)/1 var(--f-mono); color: var(--ink); background: var(--g); padding: .2rem .35rem; white-space: nowrap; }
+.envelope__lbl--right { left: 80%; top: 0; margin: .5rem 0 0 .5rem; writing-mode: vertical-rl; }
+.envelope__lbl--bottom { left: 0; top: calc(480 / 525 * 100%); margin: .5rem 0 0 .5rem; }
+@container (max-width: 520px) { .envelope__x { display: none; } }
+@container (max-width: 300px) { .envelope__lbl { display: none; } }
+.scale { position: relative; max-width: 800px; margin-top: var(--s2); }
+.scale__bar { display: block; width: 100%; height: 28px; overflow: visible; fill: none; stroke: var(--dim); stroke-width: 1; }
+.scale__bar line { vector-effect: non-scaling-stroke; }
+.fig .scale__bar { min-width: 0; max-width: none; height: 28px; stroke: var(--dim); }
+.scale__lbl { position: absolute; top: 14px; font: 400 var(--t-mono-s)/1 var(--f-mono); color: var(--dim); font-variant-numeric: lining-nums tabular-nums; }
+.scale__lbl--0 { left: 0; } .scale__lbl--256 { left: 32%; } .scale__lbl--512 { left: 64%; } .scale__lbl--640 { left: 80%; } .scale__lbl--800 { right: 0; }

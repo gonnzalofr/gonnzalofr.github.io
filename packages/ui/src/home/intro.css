@@ -1,0 +1,11 @@
+/* ---------- 17. Home: an introduction, then the work to choose from ----------
+   The intro is about the person (name, lead, about, facts) on paper. Below it every project is a band on its own
+   ground — the ground its case study is set on — with its name, one line, its status and a glimpse of its evidence.
+   The whole band opens the case study; no project is the headline. */
+.intro { padding-top: var(--s6); padding-bottom: var(--s5); row-gap: 0; }
+.intro h1 { margin: 0 0 var(--s4); }
+.intro .deck { margin-bottom: var(--s4); }
+.intro__about { grid-row: span 2; }
+.intro__about p { max-width: 64ch; }
+.intro__act { font: 400 var(--t-mono)/1.6 var(--f-mono); margin-top: var(--s3); }
+.intro__facts { grid-column: 9 / 13; grid-row: 4 / span 2; align-self: start; }

@@ -1,0 +1,8 @@
+/* ---------- 6. Page header (case studies, index pages) ---------- */
+.cs { padding-top: var(--s6); }
+.kicker { font-size: var(--t-mono); line-height: 1.4; color: var(--dim); margin: 0 0 var(--s2); }
+h1 { font-size: var(--t-name); line-height: .9; }
+.cs h1 { margin-bottom: var(--s4); }
+.deck { font: 400 var(--t-lead)/1.35 var(--f-sans); letter-spacing: -.01em; max-width: 40ch; }
+.cs .deck { margin-bottom: var(--s4); }
+.cs .fig { margin-block: var(--s3) 0; }

@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import Inline from '../../components/Inline.astro';
+import { builds, projects, views } from '@portfolio/content';
+// the smaller builds in two columns: the first half (rounded up) on the left
+const half = Math.ceil(builds.length / 2);
+const columns = [{ col: 'col-a', items: builds.slice(0, half) }, { col: 'col-b', items: builds.slice(half) }];
+---
+<Base
+  title="Work — Gonzalo Ferrero Martín"
+  description="What I have built, with the checks behind it: a DVI transmitter in Verilog, a HiFi player, an autonomous rover, a four-board cradle and five smaller builds."
+  kind="work-index"
+  depth={1}
+  ground="paper"
+>
+<main id="main">
+
+  <section class="page cs">
+    <p class="kicker col-head"><Inline html={views.workKicker} /></p>
+    <h1 class="col-head">Work</h1>
+    <p class="deck col-prose">Everything I have built so far, with the checks behind it.</p>
+  </section>
+
+  <section class="page sec" id="projects">
+    <hr class="sec__rule col-full">
+    <p class="sec__reading col-margin">{views.projectsReading}</p>
+    <h2 class="col-head">Case studies</h2>
+
+    {projects.map((p) => (
+    <article class="row col-full" id={p.anchor}>
+      <p class="row__no">{p.no}</p>
+      <div class="row__title">
+        <h3><a href={`${p.slug}.html`}>{p.name}</a></h3>
+        <p class="row__deck"><Inline html={p.row.deck} /></p>
+        <p class="row__notice"><Inline html={p.row.notice} /></p>
+      </div>
+      <ul class="row__meta">
+        <li>{p.row.stack}</li>
+        <li><Inline html={views.rowWhen(p)} /></li>
+        <li><Inline html={views.statusMark(p.status)} /></li>
+      </ul>
+    </article>
+    ))}
+  </section>
+
+  <section class="page sec" id="builds">
+    <hr class="sec__rule col-full">
+    <p class="sec__reading col-margin">{views.buildsReading}</p>
+    <h2 class="col-head">Smaller builds</h2>
+    {columns.map(({ col, items }) => (
+    <ul class={`nlist ${col}`}>
+      {items.map((b) => (
+      <li id={b.id}>
+        <p class="nlist__kicker"><Inline html={views.buildKicker(b)} /></p>
+        <h3 class="nlist__title"><Inline html={b.title} /></h3>
+        <p><Inline html={b.body} /></p>
+      </li>
+      ))}
+    </ul>
+    ))}
+  </section>
+
+</main>
+</Base>

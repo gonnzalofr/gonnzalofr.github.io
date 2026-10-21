@@ -1,0 +1,23 @@
+---
+// The BSc program by year and quartile (Notes). Each course: code, name with its type, credits (read as "5 ECTS").
+import { courseByCode, views, when, type Course } from '@portfolio/content';
+const row = (c: Course) => {
+  if ('continues' in c) return { code: c.code, name: courseByCode(c.code).name, type: 'continued', ects: undefined };
+  return { code: c.code, name: c.name, type: c.spans ? `${c.type} · ${c.spans}` : c.type, ects: c.ects };
+};
+---
+{views.curriculum.map((y) => (
+<div class="cur col-full">
+  <h3 class="cur__year">Year {y.n} <span class="mono">{when(y.dates)}</span> <span class="mono">{views.yearLine(y)}</span></h3>
+  <ol class="cur__q">
+    {y.quartiles.map((q, i) => (
+    <li class="cur__quart">
+      <h4 class="cur__qname">Q{i + 1} · {q.state}</h4>
+      <ul class="cur__list">
+        {q.courses.map(row).map((c) => <li class="cur__course"><span class="cur__code">{c.code}</span><span class="cur__name">{c.name} <span class="cur__type">{c.type}</span></span><span class="cur__ects">{c.ects !== undefined && <Fragment>{c.ects}<span class="vh"> ECTS</span></Fragment>}</span></li>)}
+      </ul>
+    </li>
+    ))}
+  </ol>
+</div>
+))}

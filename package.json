@@ -1,16 +1,21 @@
 {
-  "name": "website-portfolio",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "python tools/check_site.py dist"
-  },
+  "name": "portfolio",
+  "private": true,
   "type": "module",
-  "dependencies": {
-    "astro": "^7.3.2",
-    "three": "^0.186.1"
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": ">=22.18"
   },
-  "private": true
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check": "turbo run check",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "parity": "node -e \"require('fs').rmSync('apps/web/dist',{recursive:true,force:true})\" && turbo run build && python3 tooling/check-site/dist_diff.py .golden/dist apps/web/dist",
+    "golden": "node -e \"require('fs').rmSync('.golden',{recursive:true,force:true})\" && node -e \"require('fs').rmSync('apps/web/dist',{recursive:true,force:true})\" && turbo run build && node -e \"require('fs').cpSync('apps/web/dist','.golden/dist',{recursive:true})\""
+  },
+  "devDependencies": {
+    "turbo": "2.11.7"
+  }
 }

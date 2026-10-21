@@ -1,0 +1,4 @@
+{
+  "extends": "@portfolio/tsconfig/node.json",
+  "include": ["src", "test"]
+}

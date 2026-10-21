@@ -1,0 +1,6 @@
+/* ---------- 13. Experience, education, kit (CV) ---------- */
+.rec { position: relative; margin-bottom: var(--s4); }
+.rec__entry { display: grid; grid-template-columns: 12rem 1fr; padding-block: var(--s2); border-top: 1px solid var(--hair); }
+.rec__date { font: 400 var(--t-mono)/1.6 var(--f-mono); color: var(--dim); margin: 0; padding: .2rem var(--s2) 0 0; font-variant-numeric: lining-nums tabular-nums; }
+.rec__role { font: 700 var(--t-body)/1.35 var(--f-sans); font-stretch: 112%; margin: 0; }
+.rec__org { margin: .25rem 0 0; }

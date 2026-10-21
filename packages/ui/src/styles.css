@@ -1,0 +1,45 @@
+@import './global/fonts.css';
+@import '@portfolio/tokens/tokens.css';   /* section 1, the tokens: generated from packages/tokens/src/tokens.ts */
+/* styles.css — "Reel" (design context: .impeccable.md). The whole site's CSS, in the order it cascades.
+   The home page introduces the person, then lists the work as bands, each on its project's ground; every other page is
+   a normal scrolling page set on one warm ground with one ink. Build names are set wide (Anybody 800, width 150); everything else is small and
+   quiet (Anybody 400 for prose, Azeret Mono for specs, labels and figures). The only saturated color is data: the
+   red inside the XSIM frame and the bit field. Never: scrims or text over busy pixels, motion that runs on its own,
+   information only on hover, a third family. None of the earlier monograph design's rules apply here. */
+
+/* Each file below holds one component's rules, or one cross-cutting concern (responsive, motion, print).
+   ORDER MATTERS: the list is the order of the original single stylesheet, and later rules win at equal specificity —
+   e.g. global/responsive.css must come after every component it overrides. Add new files where their rules belong
+   in that order, not alphabetically. (Cascade layers would let specificity lose to layer order, so none are used.) */
+@import './global/base.css';
+@import './global/links-focus.css';
+@import './layout/grid.css';
+@import './chrome/site-header.css';
+@import './layout/page-header.css';
+@import './layout/section.css';
+@import './text/meta-row.css';
+@import './figure/figure.css';
+@import './figure/envelope.css';
+@import './islands/board-viewer.css';
+@import './islands/tmds-encoder.css';
+@import './text/pull-and-note.css';
+@import './text/prose-list.css';
+@import './text/checklist.css';
+@import './text/status.css';
+@import './text/entry-list.css';
+@import './text/link-list.css';
+@import './work/project-row.css';
+@import './text/timeline.css';
+@import './text/key-value-rows.css';
+@import './work/curriculum.css';
+@import './layout/prose.css';
+@import './work/turn.css';
+@import './chrome/footer.css';
+@import './home/intro.css';
+@import './text/fact-list.css';
+@import './work/project-band.css';
+@import './work/build-list.css';
+@import './home/responsive.css';
+@import './global/responsive.css';
+@import './global/motion.css';
+@import './global/print.css';
