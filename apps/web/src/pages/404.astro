@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { projects, views } from '@portfolio/content';
 // GitHub Pages serves this for any missing address, at any depth, so every link on it is absolute (depth 'abs').
 const S = new URL('./', Astro.site).href;
 ---
@@ -21,11 +22,8 @@ const S = new URL('./', Astro.site).href;
 
   <section class="page sec">
     <ul class="more col-prose">
-      <li><a href={`${S}work/index.html`}>All work</a> <span>4 case studies · 5 smaller builds</span></li>
-      <li><a href={`${S}work/hdmi-dvi-transmitter.html`}>HDMI / DVI transmitter</a> <span>Verilog · XSIM</span></li>
-      <li><a href={`${S}work/venus-rover.html`}>Venus rover</a> <span>C · Python · MQTT</span></li>
-      <li><a href={`${S}work/hifi-player.html`}>Battery-powered HiFi player</a> <span>PCB layout · ESP32-S3R8</span></li>
-      <li><a href={`${S}work/rock-your-baby.html`}>Rock Your Baby</a> <span>C · libpynq</span></li>
+      <li><a href={`${S}work/index.html`}>All work</a> <span>{views.notFoundAllWork}</span></li>
+      {projects.map((p) => <li><a href={`${S}work/${p.slug}.html`}>{p.name}</a> <span>{p.notFound.stack}</span></li>)}
       <li><a href={`${S}cv.html`}>CV</a> <span>one A4 page</span></li>
       <li><a href="#contact">Contact</a> <span>email · GitHub · LinkedIn</span></li>
     </ul>

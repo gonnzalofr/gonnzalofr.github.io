@@ -1,19 +1,20 @@
 ---
 import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/CaseHeader.astro';
+import Turn from '../../components/Turn.astro';
+import { project, views } from '@portfolio/content';
+const p = project('hdmi-dvi-transmitter');
 ---
 <Base
-  title="HDMI / DVI transmitter — Gonzalo Ferrero Martín"
-  description="A DVI video pipeline written from scratch in Verilog for the PYNQ-Z2: 640×480 timing, TMDS encoder, and self-checking XSIM testbenches."
+  title={views.caseTitle(p)}
+  description={p.description}
   kind="work-case"
   depth={1}
-  ground="black"
+  ground={p.ground}
 >
 <main id="main">
 
-  <section class="page cs">
-    <p class="kicker col-head">Personal project · <span class="nb">Jul 2026 – present</span></p>
-    <h1 class="col-head">HDMI / DVI transmitter</h1>
-    <p class="deck col-prose">A DVI transmitter written from scratch in Verilog, verified in simulation before it ever touches a board.</p>
+  <CaseHeader project={p}>
     <figure class="fig fig--bleed" id="fig-1">
       <div class="fig__scroll" tabindex="0" role="group" aria-labelledby="fig-1-cap">
         <svg viewBox="0 0 800 120" preserveAspectRatio="xMinYMin meet" role="img" aria-labelledby="f1t">
@@ -31,13 +32,7 @@ import Base from '../../layouts/Base.astro';
       </div>
       <figcaption id="fig-1-cap"><span class="fig__no">Fig.&nbsp;1</span> — One line of 640×480 @ 25.175 MHz: 640 active, 16 front porch, 96 sync, 48 back porch; 800 clocks in all. Drawn to scale; hsync low from clock 656 to 751.</figcaption>
     </figure>
-    <dl class="meta col-full">
-      <div class="meta__cell"><dt>Role</dt><dd>Everything — personal project</dd></div>
-      <div class="meta__cell"><dt>Stack</dt><dd>Verilog · XSIM · Vivado</dd></div>
-      <div class="meta__cell"><dt>Board</dt><dd>PYNQ-Z2 (Zynq-7020)</dd></div>
-      <div class="meta__cell"><dt>Status</dt><dd><span class="status">in progress</span> — timing · pattern and encoder verified in simulation; serializer and board bring-up in progress</dd></div>
-    </dl>
-  </section>
+  </CaseHeader>
 
   <section class="page">
     <div class="prose-block col-full">
@@ -221,10 +216,7 @@ q_m[7:0]: 5 ones, 3 zeros · cnt_r = 0 → q_m[8] decides → keep, q_out[9] = 0
 
     </div>
 
-    <nav class="turn col-full" aria-label="Previous and next project">
-      <a data-ground="walnut" href="rock-your-baby.html" rel="prev"><span class="mono">04</span> <span aria-hidden="true">←</span> Rock Your Baby</a>
-      <a data-ground="sand" class="turn__next" href="venus-rover.html" rel="next"><span class="mono">02</span> Venus rover <span aria-hidden="true">→</span></a>
-    </nav>
+    <Turn slug={p.slug} />
   </section>
 
 </main>

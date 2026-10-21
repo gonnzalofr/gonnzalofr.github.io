@@ -1,5 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Inline from '../../components/Inline.astro';
+import { builds, projects, views } from '@portfolio/content';
+// the smaller builds in two columns: the first half (rounded up) on the left
+const half = Math.ceil(builds.length / 2);
+const columns = [{ col: 'col-a', items: builds.slice(0, half) }, { col: 'col-b', items: builds.slice(half) }];
 ---
 <Base
   title="Work — Gonzalo Ferrero Martín"
@@ -11,106 +16,48 @@ import Base from '../../layouts/Base.astro';
 <main id="main">
 
   <section class="page cs">
-    <p class="kicker col-head">4 case studies · 5 smaller builds · <span class="nb">2025 – present</span></p>
+    <p class="kicker col-head"><Inline html={views.workKicker} /></p>
     <h1 class="col-head">Work</h1>
     <p class="deck col-prose">Everything I have built so far, with the checks behind it.</p>
   </section>
 
   <section class="page sec" id="projects">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">4 projects · 1 in progress</p>
+    <p class="sec__reading col-margin">{views.projectsReading}</p>
     <h2 class="col-head">Case studies</h2>
 
-    <article class="row col-full" id="hdmi">
-      <p class="row__no">01</p>
+    {projects.map((p) => (
+    <article class="row col-full" id={p.anchor}>
+      <p class="row__no">{p.no}</p>
       <div class="row__title">
-        <h3><a href="hdmi-dvi-transmitter.html">HDMI / DVI transmitter</a></h3>
-        <p class="row__deck">A DVI video pipeline in Verilog: timing, pattern, TMDS encoder; serializer in progress.</p>
-        <p class="row__notice"><span class="mono">decode(encode(d)) == d</span> on every symbol, against an independent decoder.</p>
+        <h3><a href={`${p.slug}.html`}>{p.name}</a></h3>
+        <p class="row__deck"><Inline html={p.row.deck} /></p>
+        <p class="row__notice"><Inline html={p.row.notice} /></p>
       </div>
       <ul class="row__meta">
-        <li>Verilog · XSIM · PYNQ-Z2</li>
-        <li><span class="nb">Jul 2026 – present</span></li>
-        <li><span class="status">in progress</span></li>
+        <li>{p.row.stack}</li>
+        <li><Inline html={views.rowWhen(p)} /></li>
+        <li><Inline html={views.statusMark(p.status)} /></li>
       </ul>
     </article>
-
-    <article class="row col-full" id="venus">
-      <p class="row__no">02</p>
-      <div class="row__title">
-        <h3><a href="venus-rover.html">Venus rover</a></h3>
-        <p class="row__deck">Run-on-boot C firmware for a PYNQ-Z2 rover that hunts colored cubes and coordinates with a partner over MQTT.</p>
-        <p class="row__notice">Cubes confirmed by a 6-read burst vote, <span class="nb">≥2 within 5 cm</span>.</p>
-      </div>
-      <ul class="row__meta">
-        <li>C · Python · PYNQ-Z2 · ESP32</li>
-        <li>TU/e 5EID0 · 2026</li>
-        <li>complete</li>
-      </ul>
-    </article>
-
-    <article class="row col-full" id="hifi">
-      <p class="row__no">03</p>
-      <div class="row__title">
-        <h3><a href="hifi-player.html">Battery-powered HiFi player</a></h3>
-        <p class="row__deck">Schematic, 4-layer PCB, power path and ESP32-S3R8 firmware; Bluetooth or microSD into an I2S DAC.</p>
-        <p class="row__notice">A design study, stopped before any board was built or bench-tested.</p>
-      </div>
-      <ul class="row__meta">
-        <li>PCB layout · C · ESP32-S3R8</li>
-        <li><span class="nb">May – Oct 2026</span></li>
-        <li>design only</li>
-      </ul>
-    </article>
-
-    <article class="row col-full" id="ryb">
-      <p class="row__no">04</p>
-      <div class="row__title">
-        <h3><a href="rock-your-baby.html">Rock Your Baby</a></h3>
-        <p class="row__deck">A distributed baby-monitoring cradle: four PYNQ-Z2 subsystems over UART.</p>
-        <p class="row__notice">RMS with noise-floor subtraction on a pthread capture loop.</p>
-      </div>
-      <ul class="row__meta">
-        <li>C · libpynq · PYNQ-Z2</li>
-        <li>TU/e 5EWC0 · <span class="nb">2025 – 26</span></li>
-        <li>complete</li>
-      </ul>
-    </article>
+    ))}
   </section>
 
   <section class="page sec" id="builds">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">5 builds · 1 in progress</p>
+    <p class="sec__reading col-margin">{views.buildsReading}</p>
     <h2 class="col-head">Smaller builds</h2>
-    <ul class="nlist col-a">
-      <li id="counter">
-        <p class="nlist__kicker">Verilog · 5EIC0</p>
-        <h3 class="nlist__title">32-bit counter from gate logic</h3>
-        <p>Half-adders from an XOR and an AND, full-adders from two half-adders, a 32-bit ripple adder from <span class="nb">32</span> of those, and a clocked counter with enable and reset on top, interfaced to an AXI4-Lite bus so a processor can configure it. Simulated, then run on the PYNQ board.</p>
+    {columns.map(({ col, items }) => (
+    <ul class={`nlist ${col}`}>
+      {items.map((b) => (
+      <li id={b.id}>
+        <p class="nlist__kicker"><Inline html={views.buildKicker(b)} /></p>
+        <h3 class="nlist__title"><Inline html={b.title} /></h3>
+        <p><Inline html={b.body} /></p>
       </li>
-      <li id="edurv">
-        <p class="nlist__kicker">Verilog · C · 5EIC0</p>
-        <h3 class="nlist__title">EduRV RISC-V labs</h3>
-        <p>Labs on EduRV, an educational RISC-V core: simulating it in Verilator, working with it in Vivado, and writing C code that runs on the core itself.</p>
-      </li>
-      <li id="i2c">
-        <p class="nlist__kicker">Verilog · <span class="status">in progress</span></p>
-        <h3 class="nlist__title">I²C master</h3>
-        <p>A reusable configuration block for the HDMI transmitter — reading the sink’s EDID over DDC — and, later, an audio DAC. So far only the module interface exists: address, data and an enable strobe in; SCL and a bidirectional SDA out. Body and testbench still to be written.</p>
-      </li>
+      ))}
     </ul>
-    <ul class="nlist col-b">
-      <li id="plotter">
-        <p class="nlist__kicker">C · <span class="nc">libpynq</span></p>
-        <h3 class="nlist__title">Function plotter</h3>
-        <p>An oscilloscope-style plotter that draws equations, with axes, on the <span class="nb">240×240</span> TFT: sine and cosine, alone or together, from 360-entry lookup tables, scaled by an adjustable ratio.</p>
-      </li>
-      <li id="snake">
-        <p class="nlist__kicker">C · <span class="nc">libpynq</span></p>
-        <h3 class="nlist__title">Snake</h3>
-        <p>A tick-based game loop: the snake moves every <span class="nb">200 ms</span>, but the loop polls the buttons every <span class="nb">10 ms</span>, keeps the last valid direction and rejects a <span class="nb">180°</span> reversal, so input feels instant.</p>
-      </li>
-    </ul>
+    ))}
   </section>
 
 </main>

@@ -1,8 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
+import Inline from '../components/Inline.astro';
+import Timeline from '../components/Timeline.astro';
+import KeyValueRows from '../components/KeyValueRows.astro';
+import { cv, person, views } from '@portfolio/content';
 // The CV: one page on screen in the site's typography, and one A4 page when printed (packages/ui/src/global/print.css hides the
 // running head and footer and compacts the entries). public/assets/Gonzalo-Ferrero-Martin-CV.pdf is
 // printed from this page with headless Edge after a build; regenerate it whenever this file changes.
+// The CV's Projects section: each project's CV entry, dated by the project's own dates.
+const projectEntries = views.cvProjects.map((p) => ({ dates: p.dates, role: p.cv.role, text: p.cv.text }));
+const sections = [
+  { id: 'education', reading: views.educationReading, title: 'Education', entries: cv.education },
+  { id: 'projects', reading: views.cvProjectsReading, title: 'Projects', entries: projectEntries },
+  { id: 'experience', reading: views.experienceReading, title: 'Experience', entries: cv.experience },
+];
+const contactCells = [
+  { label: 'Email', html: `<a href="mailto:${person.email}">${person.email}</a>` },
+  { label: 'Portfolio', html: `<a href="${person.site.url}">${person.site.label}</a>` },
+  { label: 'Links', html: person.links.map((l) => `<a href="${l.href}" rel="noopener">${l.label}</a>`).join('<br>') },
+  { label: 'Based', html: person.based },
+];
 ---
 <Base
   title="CV — Gonzalo Ferrero Martín"
@@ -14,149 +31,36 @@ import Base from '../layouts/Base.astro';
 <main id="main" class="cv">
 
   <section class="page cs">
-    <p class="kicker col-head">Curriculum vitae · October 2026</p>
-    <h1 class="col-head">Gonzalo <span class="nb">Ferrero Martín</span></h1>
+    <p class="kicker col-head">{views.cvKicker}</p>
+    <h1 class="col-head">{person.name.given} <span class="nb">{person.name.family}</span></h1>
     <p class="deck col-prose">Electrical Engineering student — hardware and software.</p>
-    <p class="col-prose cv__pdf"><a href="assets/Gonzalo-Ferrero-Martin-CV.pdf">Download the PDF — one A4 page</a></p>
+    <p class="col-prose cv__pdf"><a href={person.cvPdf.path}>Download the PDF — one A4 page</a></p>
     <dl class="meta col-full">
-      <div class="meta__cell"><dt>Email</dt><dd><a href="mailto:g.ferrero.martin@student.tue.nl">g.ferrero.martin@student.tue.nl</a></dd></div>
-      <div class="meta__cell"><dt>Portfolio</dt><dd><a href="https://gonnzalofr.github.io/">gonnzalofr.github.io</a></dd></div>
-      <div class="meta__cell"><dt>Links</dt><dd><a href="https://github.com/gonnzalofr" rel="noopener">github.com/gonnzalofr</a><br><a href="https://www.linkedin.com/in/gonnzalofr/" rel="noopener">linkedin.com/in/gonnzalofr</a></dd></div>
-      <div class="meta__cell"><dt>Based</dt><dd>Eindhoven · NL</dd></div>
+      {contactCells.map((c) => <div class="meta__cell"><dt>{c.label}</dt><dd><Inline html={c.html} /></dd></div>)}
     </dl>
   </section>
 
-  <section class="page sec" id="education">
+  {sections.map((sec) => (
+  <section class="page sec" id={sec.id}>
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><span class="nb">2023 – 2028</span> · 3 schools</p>
-    <h2 class="col-head">Education</h2>
-    <div class="rec col-prose">
-      <div class="rec__entry">
-        <p class="rec__date">Sep 2025 – Jul 2028</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Eindhoven University of Technology (TU/e)</h3>
-          <p class="rec__org">Eindhoven — BSc Electrical Engineering, expected July 2028. First-year weighted average <span class="nb">9.58 / 10</span>.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">Sep 2024 – Jun 2025</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Harrison High School</h3>
-          <p class="rec__org">Harrison, New York — Graduated Summa Cum Laude. <span class="nb">ACT 35</span>.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">Sep 2023 – Jun 2024</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Humanitas Bilingual School</h3>
-          <p class="rec__org">Tres Cantos, Madrid — Honorable mentions in Mathematics, Physics, and Chemistry.</p>
-        </div>
-      </div>
-    </div>
+    <p class="sec__reading col-margin"><Inline html={sec.reading} /></p>
+    <h2 class="col-head">{sec.title}</h2>
+    <Timeline entries={sec.entries} />
   </section>
-
-  <section class="page sec" id="projects">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">4 projects · <span class="nb">2025 – present</span></p>
-    <h2 class="col-head">Projects</h2>
-    <div class="rec col-prose">
-      <div class="rec__entry">
-        <p class="rec__date">Jul 2026 – present</p>
-        <div class="rec__body">
-          <h3 class="rec__role">HDMI / DVI transmitter — Verilog on PYNQ-Z2 (Zynq-7020)</h3>
-          <p class="rec__org">Personal project. A DVI pipeline from scratch: <span class="nb">640×480</span> timing, pattern generator and TMDS 8b/10b encoder, verified by self-checking XSIM testbenches — an independent decoder on every symbol, a full frame dumped to a PPM file and seven timing counts checked against constants. Serializer and board bring-up in progress.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">May 2026 – Oct 2026</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Battery-powered HiFi music player — PCB design</h3>
-          <p class="rec__org">Personal design study, not built. Schematic capture, 4-layer PCB layout in three revisions and power path around an ESP32-S3R8; audio from Bluetooth or microSD through a MUX into an I2S DAC.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">2026</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Venus rover — autonomous dual-robot firmware, TU/e 5EID0</h3>
-          <p class="rec__org">Run-on-boot C firmware for a PYNQ-Z2 rover: hunts colored cubes with three VL53L0X ToF sensors, dead-reckons its position, shares finds with a partner robot over MQTT (UART → ESP32 → broker); four-state autopilot, boundary-evade interrupt, <span class="nb">6</span>-read burst vote on every detection. Also the Python mission-control relay, logger and live map.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">2025 – 2026</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Rock Your Baby — distributed baby-monitoring cradle, TU/e 5EWC0</h3>
-          <p class="rec__org">Four PYNQ-Z2 subsystems in C talking over UART — heartbeat, crying, decision-making, actuator: ADC sampling, an adaptive exponential filter and RMS with noise-floor subtraction, pthreads, two PWM channels for the rocking motion.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="page sec" id="experience">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><span class="nb">2026 – 2027</span></p>
-    <h2 class="col-head">Experience</h2>
-    <div class="rec col-prose">
-      <div class="rec__entry">
-        <p class="rec__date">Sep 2026 – Jun 2027</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Student Mentor, First-Year Electrical Engineering</h3>
-          <p class="rec__org">TU/e — current. Selected to guide incoming Electrical Engineering students through coursework and the transition to university.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">Apr 2027 – Jul 2027</p>
-        <div class="rec__body">
-          <h3 class="rec__role">Student Assistant &amp; Course Reviewer, Communication 1</h3>
-          <p class="rec__org">TU/e — upcoming. Selected as one of two students to review and catalog the course’s content and support the lab sessions.</p>
-        </div>
-      </div>
-      <div class="rec__entry">
-        <p class="rec__date">Jan 2026 – <span class="nb">14 Oct 2026</span></p>
-        <div class="rec__body">
-          <h3 class="rec__role">Electrical Engineer, Student Team Daedalus</h3>
-          <p class="rec__org"><a href="notes.html#daedalus">Student Team Daedalus</a>, TU/e — a solar-powered autonomous aircraft for wildfire surveillance. PCB design, embedded programming and bench verification of the aircraft’s electronics, in the Electrical / Embedded Systems department.</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
+  ))}
 
   <section class="page sec" id="skills">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">HDL, code, tools, hardware</p>
+    <p class="sec__reading col-margin">{cv.skills.reading}</p>
     <h2 class="col-head">Skills</h2>
-    <div class="kit col-prose">
-      <div class="kit__row">
-        <p class="kit__label">HDL &amp; code</p>
-        <p class="kit__text">Verilog, C, Python, MATLAB, engineering mathematics.</p>
-      </div>
-      <div class="kit__row">
-        <p class="kit__label">Tools</p>
-        <p class="kit__text">Vivado, XSIM, Verilator, Altium, KiCad, EasyEDA, LTspice.</p>
-      </div>
-      <div class="kit__row">
-        <p class="kit__label">Hardware</p>
-        <p class="kit__text">Analog and digital circuit design, 4-layer PCB layout, embedded systems, bring-up and bench debug.</p>
-      </div>
-      <p class="kit__parts">PYNQ-Z2 (Zynq-7020) · ESP32 / ESP32-S3R8 · VL53L0X ToF · TCS3200 color sensor · TCRT5000 IR · NTC thermistors · stepper drivers · I2S DACs</p>
-
-    </div>
+    <KeyValueRows rows={cv.skills.rows} parts={cv.skills.parts} />
   </section>
 
   <section class="page sec" id="languages">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">Three languages · EU citizen</p>
+    <p class="sec__reading col-margin">{cv.languages.reading}</p>
     <h2 class="col-head">Languages</h2>
-    <div class="kit col-prose">
-      <div class="kit__row">
-        <p class="kit__label">Spoken</p>
-        <p class="kit__text">Spanish, native · English, fluent · French, B1</p>
-      </div>
-      <div class="kit__row">
-        <p class="kit__label">Citizenship</p>
-        <p class="kit__text">Spanish and French (EU) · authorized to work in the United States through 2028</p>
-      </div>
-    </div>
+    <KeyValueRows rows={cv.languages.rows} />
   </section>
 
 </main>

@@ -179,6 +179,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@portfolio/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@portfolio/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -191,6 +194,25 @@ importers:
       three:
         specifier: ^0.186.1
         version: 0.186.1
+
+  packages/content:
+    dependencies:
+      '@portfolio/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      zod:
+        specifier: 4.6.7
+        version: 4.6.7
+    devDependencies:
+      '@portfolio/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      typescript:
+        specifier: 7.0.2
+        version: 7.0.2
 
   packages/tokens:
     devDependencies:

@@ -1,19 +1,20 @@
 ---
 import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/CaseHeader.astro';
+import Turn from '../../components/Turn.astro';
+import { project, views } from '@portfolio/content';
+const p = project('rock-your-baby');
 ---
 <Base
-  title="Rock Your Baby — Gonzalo Ferrero Martín"
-  description="A four-board baby-monitoring cradle on PYNQ-Z2s: heartbeat, crying, decision-making and actuator subsystems talking over UART, in C."
+  title={views.caseTitle(p)}
+  description={p.description}
   kind="work-case"
   depth={1}
-  ground="walnut"
+  ground={p.ground}
 >
 <main id="main">
 
-  <section class="page cs">
-    <p class="kicker col-head"><span class="nc">TU/e</span> 5EWC0 · first year · <span class="nb">2025 – 26</span></p>
-    <h1 class="col-head">Rock Your Baby</h1>
-    <p class="deck col-prose">A baby-monitoring cradle split across four boards that talk over UART.</p>
+  <CaseHeader project={p}>
     <figure class="fig fig--bleed" id="fig-1">
       <div class="fig__scroll" tabindex="0" role="group" aria-labelledby="fig-1-cap">
         <svg viewBox="0 0 800 260" preserveAspectRatio="xMinYMin meet" role="img" aria-labelledby="f1t">
@@ -56,13 +57,7 @@ import Base from '../../layouts/Base.astro';
       </div>
       <figcaption id="fig-1-cap"><span class="fig__no">Fig.&nbsp;1</span> — Four PYNQ-Z2 boards, one subsystem each, talking over UART; the actuator drives two PWM channels, one for frequency and one for amplitude.</figcaption>
     </figure>
-    <dl class="meta col-full">
-      <div class="meta__cell"><dt>Role</dt><dd>Team project · 5EWC0 · first year</dd></div>
-      <div class="meta__cell"><dt>Stack</dt><dd>C · libpynq</dd></div>
-      <div class="meta__cell"><dt>Board</dt><dd>PYNQ-Z2 ×4</dd></div>
-      <div class="meta__cell"><dt>Status</dt><dd>complete — first-year project · <span class="nb">2025 – 26</span></dd></div>
-    </dl>
-  </section>
+  </CaseHeader>
 
   <section class="page">
     <div class="prose-block col-full">
@@ -89,10 +84,7 @@ import Base from '../../layouts/Base.astro';
 
     </div>
 
-    <nav class="turn col-full" aria-label="Previous and next project">
-      <a data-ground="paper" href="hifi-player.html" rel="prev"><span class="mono">03</span> <span aria-hidden="true">←</span> HiFi player</a>
-      <a data-ground="black" class="turn__next" href="hdmi-dvi-transmitter.html" rel="next"><span class="mono">01</span> HDMI / DVI transmitter <span aria-hidden="true">→</span></a>
-    </nav>
+    <Turn slug={p.slug} />
   </section>
 
 </main>

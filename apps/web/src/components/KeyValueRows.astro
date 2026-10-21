@@ -1,0 +1,15 @@
+---
+// Label beside text, one row each (CV skills and languages); an optional closing line in mono.
+import Inline from './Inline.astro';
+interface Props { rows: { label: string; text: string }[]; parts?: string }
+const { rows, parts } = Astro.props;
+---
+<div class="kit col-prose">
+  {rows.map((r) => (
+  <div class="kit__row">
+    <p class="kit__label"><Inline html={r.label} /></p>
+    <p class="kit__text"><Inline html={r.text} /></p>
+  </div>
+  ))}
+  {parts && <p class="kit__parts">{parts}</p>}
+</div>

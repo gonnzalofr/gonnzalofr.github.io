@@ -1,5 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import Inline from '../components/Inline.astro';
+import Curriculum from '../components/Curriculum.astro';
+import { team, views, when } from '@portfolio/content';
+const memberCells = [
+  { label: 'Department', html: team.department },
+  { label: 'Role', html: team.role },
+  { label: 'Member', html: when(team.dates, 'long') },
+  { label: 'Team', html: `<a href="${team.url}" rel="noopener">${team.urlLabel} <span aria-hidden="true">↗</span></a>` },
+];
 ---
 <Base
   title="Notes — Gonzalo Ferrero Martín"
@@ -18,8 +27,8 @@ import Base from '../layouts/Base.astro';
 
   <section class="page sec" id="daedalus">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">Team · <span class="nc">TU/e</span> · est. 2021</p>
-    <h2 class="col-head">Student Team Daedalus</h2>
+    <p class="sec__reading col-margin"><Inline html={views.teamReading} /></p>
+    <h2 class="col-head">{team.name}</h2>
 
     <p class="col-prose"><a href="https://www.teamdaedalus.eu/" rel="noopener">Team Daedalus</a> is a multidisciplinary student team at Eindhoven University of Technology, founded in 2021 and based at the TU/e Innovation Space: <span class="nb">39</span> students from more than <span class="nb">15</span> countries building a solar-powered autonomous aircraft for prolonged aerial surveillance, aimed at wildfire detection. Airframes, avionics and power electronics are all designed, manufactured and tested in-house, in iterative prototypes called Lapyx — each one a refinement of the last, each crash folded into the next build.</p>
 
@@ -29,133 +38,18 @@ import Base from '../layouts/Base.astro';
     <p class="col-prose">The electronics are built alongside seven other departments — mechanical and airframe, avionics, computer and machine vision, business, PR and communication, the board — so a board is designed against an airframe that is being built at the same time, a power budget the solar array sets, and avionics written by someone else. The rebuild after the maiden flight worked the same way: the crash’s lessons had to be carried into every subsystem at once, with the second flight already on the calendar for September.</p>
 
     <dl class="meta col-full">
-      <div class="meta__cell"><dt>Department</dt><dd>Electrical / Embedded Systems</dd></div>
-      <div class="meta__cell"><dt>Role</dt><dd>PCB design · embedded programming · bench verification</dd></div>
-      <div class="meta__cell"><dt>Member</dt><dd>January – 14 October 2026</dd></div>
-      <div class="meta__cell"><dt>Team</dt><dd><a href="https://www.teamdaedalus.eu/" rel="noopener">teamdaedalus.eu <span aria-hidden="true">↗</span></a></dd></div>
+      {memberCells.map((c) => <div class="meta__cell"><dt>{c.label}</dt><dd><Inline html={c.html} /></dd></div>)}
     </dl>
   </section>
 
   <section class="page sec" id="curriculum">
     <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><span class="nc">BSc</span> Electrical Engineering · <span class="nc">TU/e</span> · 180 ECTS · <span class="nb">2025 – 28</span></p>
+    <p class="sec__reading col-margin"><Inline html={views.curriculumReading} /></p>
     <h2 class="col-head">Curriculum</h2>
 
     <p class="col-prose">The three-year program, laid out the way TU/e schedules it: four quartiles a year, five credits a course, with the first-year challenge and the bachelor project spanning two quartiles at ten. Year one is complete, with a weighted average of <span class="nb">9.58 / 10</span>. The first half of year two is what I am enrolled in now; everything after that is the plan as it stands, electives included. Each course is listed as its code, its title and its credits in ECTS.</p>
 
-    <div class="cur col-full">
-      <h3 class="cur__year">Year 1 <span class="mono">2025 – 26</span> <span class="mono">completed · 60 ECTS</span></h3>
-      <ol class="cur__q">
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q1 · passed</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5EWC0</span><span class="cur__name">Programming and engineering challenge <span class="cur__type">core · Q1 – Q2</span></span><span class="cur__ects">10<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">2WBB0</span><span class="cur__name">Calculus, variant 2 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EPC0</span><span class="cur__name">Circuits <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q2 · passed</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5EWC0</span><span class="cur__name">Programming and engineering challenge <span class="cur__type">continued</span></span><span class="cur__ects"></span></li>
-            <li class="cur__course"><span class="cur__code">5ESF0</span><span class="cur__name">Signals and systems <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EZA0</span><span class="cur__name">Mathematics 1 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q3 · passed</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5ECD0</span><span class="cur__name">Electronic circuits 1 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EIC0</span><span class="cur__name">Computer architecture <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EPD0</span><span class="cur__name">Physics for EE <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">SMFA00</span><span class="cur__name">MyFuture activities <span class="cur__type">career program</span></span><span class="cur__ects"></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q4 · passed</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5EID0</span><span class="cur__name">Engineering challenge for Venus <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5ETC0</span><span class="cur__name">Communication 1 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EZB0</span><span class="cur__name">Mathematics 2 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-      </ol>
-    </div>
-
-    <div class="cur col-full">
-      <h3 class="cur__year">Year 2 <span class="mono">2026 – 27</span> <span class="mono">in progress · 65 ECTS planned</span></h3>
-      <ol class="cur__q">
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q1 · enrolled</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5ECE0</span><span class="cur__name">Electronic circuits 2 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EPF0</span><span class="cur__name">Electromagnetics 1 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XTA0</span><span class="cur__name">Telecommunications systems <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q2 · enrolled</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">0LVX30</span><span class="cur__name">ITEC engineering ethics <span class="cur__type">impact of technology</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EWD0</span><span class="cur__name">Electrical power systems for EE <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XCD0</span><span class="cur__name">Electronic circuits 3 <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q3 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">34MLS</span><span class="cur__name">Machine learning in science <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EPG0</span><span class="cur__name">Introduction photonics <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EZC0</span><span class="cur__name">Mathematics 3 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XCC0</span><span class="cur__name">Biopotential and neural interface circuits <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q4 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">4CBLW00</span><span class="cur__name">Multidisciplinary CBL <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5ESG0</span><span class="cur__name">Signal processing <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5ESH0</span><span class="cur__name">Control systems <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-      </ol>
-    </div>
-
-    <div class="cur col-full">
-      <h3 class="cur__year">Year 3 <span class="mono">2027 – 28</span> <span class="mono">planned · 50 ECTS</span></h3>
-      <ol class="cur__q">
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q1 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">0LVX40</span><span class="cur__name">ITEC engineering for society <span class="cur__type">impact of technology</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5EWF0</span><span class="cur__name">Electromechanics 1 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XPG0</span><span class="cur__name">Semiconductor technology <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q2 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5EPB0</span><span class="cur__name">Electromagnetics 2 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XIF0</span><span class="cur__name">Neuro computation <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q3 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5XEC0</span><span class="cur__name">Final bachelor project <span class="cur__type">BEP · Q3 – Q4</span></span><span class="cur__ects">10<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5ETD0</span><span class="cur__name">Communication 2 <span class="cur__type">core</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-            <li class="cur__course"><span class="cur__code">5XTC0</span><span class="cur__name">Components in wireless technologies <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-        <li class="cur__quart">
-          <h4 class="cur__qname">Q4 · planned</h4>
-          <ul class="cur__list">
-            <li class="cur__course"><span class="cur__code">5XEC0</span><span class="cur__name">Final bachelor project <span class="cur__type">continued</span></span><span class="cur__ects"></span></li>
-            <li class="cur__course"><span class="cur__code">5XPD0</span><span class="cur__name">High-speed electronic-photonic devices <span class="cur__type">elective</span></span><span class="cur__ects">5<span class="vh"> ECTS</span></span></li>
-          </ul>
-        </li>
-      </ol>
-    </div>
+    <Curriculum />
   </section>
 
 </main>

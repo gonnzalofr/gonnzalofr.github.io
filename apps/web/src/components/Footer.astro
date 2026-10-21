@@ -1,19 +1,20 @@
 ---
 // Contact: the footer of every page.
-// The confirmed internship line appears here, once per page. Its one relative href (the CV PDF) needs the
-// "../" prefix on work/ and log/ pages; the footer derives it from the page URL.
-const P = /^\/404/.test(Astro.url.pathname) ? new URL('./', Astro.site).href   // the 404 page is served at any depth
-  : /^\/(work|log)(\/|$)/.test(Astro.url.pathname) ? '../' : '';
+// The confirmed internship line appears here, once per page (person.contact in @portfolio/content).
+import { person, fullName, views } from '@portfolio/content';
+import Inline from './Inline.astro';
+import { rootPrefix } from '../lib/paths';
+const P = rootPrefix(Astro.url, Astro.site);
 ---
 <footer class="foot page" id="contact">
   <hr class="sec__rule col-full">
   <h2 class="foot__h">Contact</h2>
-  <p class="col-prose">Email is the quickest way to reach me; the code is on GitHub. EU citizen (Spanish and French), authorized to work in the US through 2028. Open to engineering internships in hardware, embedded systems, and FPGA work.</p>
+  <p class="col-prose"><Inline html={person.contact} /></p>
   <dl class="meta col-full">
-    <div class="meta__cell"><dt>Email</dt><dd><a href="mailto:g.ferrero.martin@student.tue.nl">g.ferrero.martin@student.tue.nl</a></dd></div>
-    <div class="meta__cell"><dt>CV</dt><dd><a href={`${P}assets/Gonzalo-Ferrero-Martin-CV.pdf`}>PDF, one A4 page</a></dd></div>
-    <div class="meta__cell"><dt>Links</dt><dd><a href="https://github.com/gonnzalofr" rel="noopener">github.com/gonnzalofr <span aria-hidden="true">↗</span></a><br><a href="https://www.linkedin.com/in/gonnzalofr/" rel="noopener">linkedin.com/in/gonnzalofr <span aria-hidden="true">↗</span></a></dd></div>
-    <div class="meta__cell"><dt>Study</dt><dd>BSc EE · TU/e · <span class="nb">2025 – 28</span></dd></div>
+    <div class="meta__cell"><dt>Email</dt><dd><a href={`mailto:${person.email}`}>{person.email}</a></dd></div>
+    <div class="meta__cell"><dt>CV</dt><dd><a href={`${P}${person.cvPdf.path}`}>{person.cvPdf.label}</a></dd></div>
+    <div class="meta__cell"><dt>Links</dt><dd>{person.links.map((l, i) => <Fragment>{i > 0 && <br>}<a href={l.href} rel="noopener">{l.label} <span aria-hidden="true">↗</span></a></Fragment>)}</dd></div>
+    <div class="meta__cell"><dt>Study</dt><dd><Inline html={views.footerStudy} /></dd></div>
   </dl>
-  <p class="foot__colophon">© 2026 Gonzalo Ferrero Martín · Eindhoven <span>Last revised October 2026</span></p>
+  <p class="foot__colophon">© {person.revised.slice(0, 4)} {fullName} · {person.city} <span>Last revised {views.revised}</span></p>
 </footer>

@@ -1,6 +1,6 @@
 # Migration plan: Turborepo + React
 
-Status, 21 October 2026: **phases 0–2 done** (the parity tool; the pnpm + Turborepo workspace; tokens and the CSS split), each with the built site identical to the one before it. Decided: option A (Astro + React), pnpm.
+Status, 21 October 2026: **phases 0–3 done** (the parity tool; the pnpm + Turborepo workspace; tokens and the CSS split; the content package), each with the built site identical to the one before it, rebuilt on top of the live repository (`gonnzalofr.github.io`). Decided: option A (Astro + React), pnpm.
 
 Notes from phase 1:
 - The toolchain (Astro 7.3.2, Vite 8.3.0, rolldown 1.2.8, lightningcss, postcss, the Astro compiler) is pinned in `pnpm-workspace.yaml` to the versions the npm lockfile had. A fresh resolve picked rolldown 1.2.14, whose minifier changes the three.js chunks by 149 bytes. Bumping them is its own commit, followed by `pnpm golden`.
@@ -11,6 +11,12 @@ Notes from phase 2:
 - Tests use Node's built-in runner (`node --test`), and the tokens build runs TypeScript directly through Node's type stripping, so the tokens package needs no build tool. Vitest arrives in phase 4 with the React render tests. TypeScript is 7.0.2 (the native compiler).
 - `apps/web` is not typechecked yet: `@astrojs/check` comes with the React work in phase 4.
 - `pnpm dev` builds the tokens first (turbo `dev` depends on `^build`). A change to `tokens.ts` while the dev server runs needs `pnpm --filter @portfolio/tokens build`.
+
+Notes from phase 3:
+- Each project keeps the copy each surface shows (band, work row, case header, 404, CV) side by side, because those summaries differ on purpose (the HDMI stack is "Verilog · XSIM · PYNQ-Z2" on its band and "Verilog · XSIM · Vivado" in its header). What follows from data is derived instead: numbers, grounds, dates in three styles, status marks, counts, prev/next, the intro's Now/Next facts.
+- Short copy is validated *inline* HTML (only `nb`, `nc`, `mono`, `status`, `vh`, `aria-hidden` spans, links and `<br>`), so phase 4 can parse it into React elements without `dangerouslySetInnerHTML`.
+- Inconsistencies kept for parity, to decide later: `TU/e` is set as `nc` on the home bands but not in the work-index rows; Venus's and Rock Your Baby's stacks differ between band and row; `.nc` changes nothing visible in "Reel" (nothing is transformed), so it could go entirely.
+- `pnpm parity` and `pnpm golden` empty `apps/web/dist` first: a turbo cache hit restores outputs over what is there, and a failed build can leave Astro's `.prerender/` behind.
 
 ## 0. Where we actually are
 
@@ -236,7 +242,7 @@ Each phase ends with a **byte-for-byte (normalized DOM) match against the curren
 | **0. Baseline** ✓ | Build today's site and store `dist/` as `golden/` (gitignored). Write `dist-diff`. | `dist-diff golden dist` passes on an unchanged build. |
 | **1. Monorepo shell** ✓ | pnpm + Turborepo; move the Astro app to `apps/web` unchanged; update CI (`pnpm check` = turbo build → check). | Zero diff; deploy workflow green. |
 | **2. Tokens + CSS split** ✓ | Shared `tooling/tsconfig`; `packages/tokens`, generated `tokens.css`, contrast test; split `site.css` into per-component files in cascade order (no layers, see §3). | Zero diff on HTML; computed styles unchanged (spot-check every page on every breakpoint in the browser pane). |
-| **3. Content package** | Extract `person`, `projects`, `builds`, `curriculum`, `cv` with Zod; the existing `.astro` pages read from it. | Zero diff. Project names appear once in `src/`. |
+| **3. Content package** ✓ | Extract `person`, `projects`, `builds`, `curriculum`, `cv` with Zod; the existing `.astro` pages read from it. | Zero diff. Project names appear once in `src/`. |
 | **4. React components** | Add `@astrojs/react` + MDX. Build the `ui` primitives (§4.1–4.4) with render tests. Convert pages one at a time, simplest first: 404 → log → work index → CV → notes → home → case studies (MDX + `figures`). | Zero diff after each page (the diff tool lists any differences that are accepted on purpose, such as SVG self-closing). |
 | **5. Islands** | `packages/tmds` + tests; `TmdsEncoder`, `BoardViewer`, `Tweaks` as React islands. Measure JS weight; decide React vs. `preact/compat` for islands. | Demo and board behave as before with and without JS; the checker passes; no new JS on other pages. |
 | **6. System polish** | `/dev/kit`, the lint rules from §5, an "add a project" guide (one `projects.ts` entry + one MDX file + figures), README update. Delete `bits.js` (unused) and `svg-self-close.mjs` if the diff shows they're no longer needed. | A new project is ~2 files; `turbo run lint typecheck test build check` green. |

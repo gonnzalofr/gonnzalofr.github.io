@@ -1,0 +1,10 @@
+---
+// Prev / next at the end of a case study: the neighboring projects in case-study order, each on its own ground.
+import { views } from '@portfolio/content';
+interface Props { slug: string }
+const { prev, next } = views.turn(Astro.props.slug);
+---
+<nav class="turn col-full" aria-label="Previous and next project">
+  <a data-ground={prev.ground} href={`${prev.slug}.html`} rel="prev"><span class="mono">{prev.no}</span> <span aria-hidden="true">←</span> {prev.shortName}</a>
+  <a data-ground={next.ground} class="turn__next" href={`${next.slug}.html`} rel="next"><span class="mono">{next.no}</span> {next.shortName} <span aria-hidden="true">→</span></a>
+</nav>

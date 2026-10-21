@@ -14,7 +14,8 @@ src/pages/notes.astro                 Student Team Daedalus + the BSc EE curricu
 src/pages/cv.astro                    one-page CV (also printed to public/assets/Gonzalo-Ferrero-Martin-CV.pdf; re-print it when cv.astro changes)
 src/pages/log/                        bench log: index + one page per entry in src/content/log/*.md
 src/layouts/Base.astro                the page shell: head, four-corner chrome, <main id="main">, Contact footer; `ground` prop picks the page's ground
-src/components/                       Nav.astro (Work · Notes · CV · Contact), Footer.astro (Contact), Tweaks.astro (dev only)
+src/components/                       Nav, Footer (Contact), CaseHeader, Turn (prev/next), Curriculum, Timeline, KeyValueRows, Inline,
+                                      glimpses/ (each project's evidence on its home band), Tweaks (dev only)
 src/scripts/site.js                   sticky-head height + scrollable-figure tab stops
 src/scripts/bits.js                   the TMDS bit field (same encoder port as tmds.js); not loaded by any page at the moment
 src/scripts/tmds.js                   the interactive TMDS encoder on the HDMI page (loaded by that page only)
@@ -25,6 +26,8 @@ astro.config.mjs                      build.format 'preserve' keeps the URLs wor
 
 At the repository root:
 packages/tokens/                      the design tokens in TypeScript (grounds, inks, type scale, space, motion) → generated tokens.css; contrast test
+packages/content/                     the site's facts as typed, Zod-validated data: person, projects, builds, team, curriculum, CV;
+                                      views.ts derives counts, date lines, kickers, prev/next and the intro facts from them
 packages/ui/src/styles.css            the whole design system's CSS: one file per component or concern, imported in cascade order
 tooling/tsconfig/                     shared strict tsconfig presets (base, node)
 tooling/check-site/check_site.py      the mechanical checker run on apps/web/dist/ (see below)
@@ -74,9 +77,9 @@ Strings that must never ship but must not be written in the repository either (y
 ## Editing
 
 - Grounds: every page passes `ground` to `Base` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the header of the generated `tokens.css` (and asserted by `pnpm test`). The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground.
-- Home bands: each project on home is an `<li class="band" data-ground="…">` whose name link covers the whole band. A new project gets a band in `index.astro` (and a case study with the same ground).
+- A new project: one entry in `packages/content/src/projects.ts` (its ground, dates, status, and the copy each place shows), a glimpse in `src/components/glimpses/` registered in `index.astro`, and its case-study page. The home band, the work-index row, the 404 link, the CV entry, the prev/next cycle and every count ("4 case studies · …") follow from the data.
 - Tweaks bar: under `pnpm dev` a small "tweaks" button (bottom left) adjusts name size, width and weight, text size, density, motion and warmth live, and "Copy values" gives the values as CSS; they belong in `packages/tokens/src/tokens.ts`. It is never rendered in a build.
-- Copy lives directly in the `.astro` pages. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
+- Facts and short copy live in `packages/content` (dates as `2026-07`, written out by `when()`: "Jul 2026 – present", or in full on the CV); the long prose of each case study, Notes and the intro is still in its `.astro` page. Short copy is *inline*: text with only the marks below, checked by the schema, with links inside the site written from the root as `~/notes.html#daedalus`. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
 - Every figure is inline SVG drawn from real numbers, or an `<img class="fig__img">` for photographs and renders; captions start with `<span class="fig__no">Fig. N</span> —`.
 - Status is only ever the dossier's words plus the small open square (`<span class="status">in progress</span>`); never colour.
 - Motion is CSS transitions on state changes only (link underlines, the prev/next blocks); all of it is instant under `prefers-reduced-motion`. There is no animation library: anime.js was evaluated in September 2026 and left out. Data figures never tween — a waveform, trace or codeword changes by redrawing, never by interpolating between states the hardware did not produce.

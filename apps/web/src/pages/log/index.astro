@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { longDate, isoDate } from '../../scripts/dates';
+import { longDate, isoDate } from '@portfolio/content';
 import { isPublished } from '../../lib/placeholder';
 
 const entries = (await getCollection('log', isPublished)).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
