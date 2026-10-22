@@ -1,13 +1,15 @@
 // The battery-powered HiFi player: a design study, stopped before any board was built.
+import type { ReactNode } from 'react';
 import { Checklist, H2, Nb, Page, Prose, ProseBlock, PullQuote, usePublished } from '@portfolio/ui';
 import { project } from '@portfolio/content';
-import { AudioPath, BoardViewer, renders, Rev1, Rev2, Rev3, StackUp } from '../../figures/hifi-player';
+import { AudioPath, BoardFigure, renders, Rev1, Rev2, Rev3, StackUp } from '../../figures/hifi-player';
 import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('hifi-player');
 
-function HifiPlayer() {
+/** `board`: the BoardViewer island, rendered by the route (only an Astro route can hydrate a component). */
+function HifiPlayer({ board }: { board?: ReactNode }) {
   const shown = usePublished(...renders);
   return (
     <main id="main">
@@ -30,7 +32,7 @@ function HifiPlayer() {
           <H2 id="board">The board</H2>
           <Prose>This is the current layout as a 3D model, straight from the EasyEDA Pro export: <Nb>70.9 × 50.4 mm</Nb>, and <Nb>8.5 mm</Nb> deep with the parts on. It is the design file, not a photograph; nothing on it was ever assembled.</Prose>
 
-          <BoardViewer />
+          <BoardFigure>{board}</BoardFigure>
 
           <H2 id="revisions">Three revisions</H2>
           <Prose>The layout has been through three revisions{shown && ', and the renders (Figs. 4–6) show each one'}. Revision 1 is a small board with two buttons, a USB-C connector, a <Nb>3.5 mm</Nb> jack, a large rotary control and a 4-pin header.</Prose>

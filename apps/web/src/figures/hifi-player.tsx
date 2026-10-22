@@ -1,5 +1,7 @@
-// The HiFi player's drawings, the 3D board (static markup for src/scripts/board.js) and the layout renders.
+// The HiFi player's drawings, the 3D board's figure (around its island) and the layout renders.
+import type { ReactNode } from 'react';
 import { ArrowMarker, Diagram, Figure, Hatch, PhotoFigure } from '@portfolio/ui';
+import type { BoardViewerProps } from '@portfolio/ui/islands/board-viewer';
 
 export function AudioPath() {
   return (
@@ -59,22 +61,27 @@ export function StackUp() {
   );
 }
 
-/** The board as a 3D model: the still render, which src/scripts/board.js replaces with the model once the figure
- *  comes near the viewport (and keeps, without JavaScript or WebGL). The ids and data attributes are the script's. */
-export function BoardViewer() {
+/** The board as a 3D model: the BoardViewer island's props, which the route passes it. */
+export const board = {
+  model: '../assets/pcb/hifi-board.glb',
+  label: 'The current HiFi player board as a 3D model. Drag, or use the arrow keys, to turn it.',
+  poster: {
+    src: '../assets/pcb/hifi-board-cut.webp', width: 1600, height: 800,
+    alt: 'The current HiFi player board rendered in 3D, seen from above at an angle: a blue board with the ESP32 and the other packages, four electrolytic capacitors in the middle, four buttons and the USB-C connector along the front edge, and a 7-pin header at the back.',
+  },
+} satisfies BoardViewerProps;
+
+/** The 3D board's figure. Its body is the BoardViewer island (@portfolio/ui/islands/board-viewer), which the route
+ *  renders and the page passes in, since only an Astro route can hydrate a component. */
+export function BoardFigure({ children }: { children: ReactNode }) {
   return (
     <Figure
       placement="bleed"
       id="fig-board"
       variant="board"
-      data-model="../assets/pcb/hifi-board.glb"
-      data-label="The current HiFi player board as a 3D model. Drag, or use the arrow keys, to turn it."
       caption="The current layout: the STEP export from EasyEDA Pro, converted to glTF with every component body kept. The model loads when the figure comes into view."
     >
-      <div className="board__stage">
-        <img className="board__poster" src="../assets/pcb/hifi-board-cut.webp" width="1600" height="800" loading="lazy" decoding="async" alt="The current HiFi player board rendered in 3D, seen from above at an angle: a blue board with the ESP32 and the other packages, four electrolytic capacitors in the middle, four buttons and the USB-C connector along the front edge, and a 7-pin header at the back." />
-      </div>
-      <p className="board__bar"><span className="board__status" id="board-status">still render · turning the model needs JavaScript and WebGL</span><button className="board__reset" type="button" hidden>reset view</button></p>
+      {children}
     </Figure>
   );
 }

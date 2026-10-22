@@ -71,6 +71,10 @@ for p in sorted(pages):
     if "<html lang=" not in src: errors.append(f"{rel}: missing <html lang>")
     if '<main id="main"' not in src and "<main id='main'" not in src: errors.append(f"{rel}: missing <main id=\"main\">")
     if 'class="skip"' not in src: errors.append(f"{rel}: missing skip link")
+    # JavaScript only where an island needs it: a page without one carries the site script and nothing else
+    scripts = re.findall(r"<script\b[^>]*>", src)
+    if "<astro-island" not in src and len(scripts) > 1:
+        errors.append(f"{rel}: {len(scripts)} <script> elements on a page without an island (only the site script may be there)")
     for pat, why in BANNED:
         for m in re.finditer(pat, src, flags=re.I):
             ln = src.count("\n", 0, m.start()) + 1

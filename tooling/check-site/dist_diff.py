@@ -1,4 +1,4 @@
-"""Parity check between two builds of the site. Usage: python dist_diff.py <golden-dist> <new-dist> [--max N]
+"""Parity check between two builds of the site. Usage: python dist_diff.py <golden-dist> <new-dist> [--max N] [--islands]
 Exit code 1 if the builds differ. Used by the migration (docs/migration-plan.md, section 6): every phase must
 produce the same site as the build before it.
 
@@ -18,11 +18,17 @@ What counts as the same:
 - Stylesheets are compared as rules: comments dropped and whitespace collapsed, so splitting a stylesheet into files
   or moving a comment is not a difference, but any change to a selector, a declaration or the order of rules is
   (the cascade depends on that order). A changed stylesheet is reported with the first place it differs.
-- Every other file (public/ copies: images, fonts, PDF, .nojekyll) is compared byte for byte at the same path."""
+- Every other file (public/ copies: images, fonts, PDF, .nojekyll) is compared byte for byte at the same path.
+
+With --islands, pages are compared without what makes them interactive: Astro's island elements (<astro-island>,
+<astro-slot>, <astro-static-slot>) are unwrapped, keeping what they hold, and every <script> and <style> element is left
+out with its content. That compares the server-rendered contents of an island with the markup a page script used to
+enhance (phase 5), and lists each island found, with its component and directive."""
 import argparse, hashlib, os, re, sys
 from collections import Counter
 from html.parser import HTMLParser
 
+ISLAND_TAGS = {"astro-island", "astro-slot", "astro-static-slot"}
 ASTRO_REF = re.compile(r"(_astro/)[^\"'()\s]+?\.(css|js|mjs)\b")
 VOID = {"area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"}
 
@@ -48,8 +54,9 @@ def spaced(text):
 class Tree(HTMLParser):
     """Flattens a page into a list of tokens, each carrying the element path it sits on (for the report), and collects
     the text content of every element that holds only inline content (`texts`)."""
-    def __init__(self):
+    def __init__(self, islands=False):
         super().__init__(convert_charrefs=True)
+        self.islands, self.skip, self.found = islands, 0, []   # --islands: depth inside <script>/<style>; islands seen
         self.tokens, self.path, self.texts = [], [], []
         self.run = ""      # text since the last tag (comments do not end it)
         self.open = []     # one [tag, text content so far, holds a block element] per open element
@@ -64,15 +71,30 @@ class Tree(HTMLParser):
         self._flush()
         self.tokens.append(("/".join(self.path), "<" + tag, self._attrs(attrs)))
         if tag in BLOCK and self.open: self.open[-1][2] = True
+    def _ignored(self, tag, attrs, start):
+        """--islands: whether this tag is left out (an island wrapper, or a script or style and what is inside it)."""
+        if not self.islands: return False
+        if tag in ("script", "style"):
+            self.skip += 1 if start else -1
+            return True
+        if tag in ISLAND_TAGS:
+            a = dict(attrs)
+            if start and tag == "astro-island":
+                url = norm_refs(a.get("component-url") or "")
+                self.found.append(f"{a.get('component-export')} from {url} (client:{a.get('client')}, props {a.get('props')})")
+            return True
+        return self.skip > 0
     def handle_starttag(self, tag, attrs):
+        if self._ignored(tag, attrs, True): return
         self._tag(tag, attrs)
         if tag not in VOID:
             self.path.append(tag)
             self.open.append([tag, "", False])
     def handle_startendtag(self, tag, attrs):
+        if self.islands and (self.skip or tag in ISLAND_TAGS): return
         self._tag(tag, attrs)
     def handle_endtag(self, tag):
-        if tag in VOID: return
+        if tag in VOID or self._ignored(tag, (), False): return
         self._flush()
         # pop to the matching open tag (tolerates the implicit closes HTML allows)
         if tag in self.path:
@@ -86,6 +108,7 @@ class Tree(HTMLParser):
                 if name == tag: break
         self.tokens.append(("/".join(self.path), "</" + tag, ()))
     def handle_data(self, data):
+        if self.skip: return
         self.run += data
         if self.open: self.open[-1][1] += data
     def handle_comment(self, data):
@@ -98,8 +121,8 @@ class Tree(HTMLParser):
         self._flush()
 
 
-def parse(path):
-    p = Tree()
+def parse(path, islands=False):
+    p = Tree(islands)
     with open(path, encoding="utf-8") as f: p.feed(f.read())
     p.close()
     return p
@@ -122,8 +145,8 @@ def fmt(tok):
     return f"{where}: {kind}{(' ' + attrs) if attrs else ''}>"[:240]
 
 
-def diff_page(a, b, maxn):
-    pa, pb = parse(a), parse(b)
+def diff_page(a, b, maxn, islands=False):
+    pa, pb = parse(a, islands), parse(b, islands)
     ta, tb = pa.tokens, pb.tokens
     out, i = [], 0
     for i, (x, y) in enumerate(zip(ta, tb)):
@@ -139,7 +162,7 @@ def diff_page(a, b, maxn):
             if x != y:
                 out.append(f"    text of {where}\n      - {x[:160]!r}\n      + {y[:160]!r}")
                 if len(out) >= maxn: break
-    return out
+    return out, [f"    island in golden: {i}" for i in pa.found] + [f"    island: {i}" for i in pb.found]
 
 
 CSS_COMMENT = re.compile(r"/\*.*?\*/", re.S)
@@ -173,6 +196,7 @@ def main():
     ap = argparse.ArgumentParser(description="Parity check between two builds of the site.")
     ap.add_argument("golden"); ap.add_argument("new")
     ap.add_argument("--max", type=int, default=5, help="differences shown per page (default 5)")
+    ap.add_argument("--islands", action="store_true", help="unwrap Astro's islands and leave out scripts and styles")
     args = ap.parse_args()
     maxn = args.max
     ga, gb = os.path.abspath(args.golden), os.path.abspath(args.new)
@@ -193,8 +217,9 @@ def main():
     for k in sorted(pb.keys() - pa.keys()): report(f"ADDED    {k}")
     for k in sorted(pa.keys() & pb.keys()):
         if k.endswith(".html"):
-            d = diff_page(pa[k], pb[k], maxn)
-            if d: report(f"CHANGED  {k}\n" + "\n".join(d))
+            d, found = diff_page(pa[k], pb[k], maxn, args.islands)
+            if d: report(f"CHANGED  {k}\n" + "\n".join(d + found))
+            elif found: print(f"SAME     {k}, scripts and styles aside\n" + "\n".join(found))
         else:
             with open(pa[k], "rb") as x, open(pb[k], "rb") as y:
                 if x.read() != y.read(): report(f"CHANGED  {k} (bytes)")

@@ -1,12 +1,12 @@
 ---
 // The document every page is rendered into: <head>, the skip link, the four-corner header, the page (the slot: a
-// React page component from src/screens/), and the Contact footer. The only .astro file besides the routes.
+// React page component from src/screens/), and the Contact footer (and, under `pnpm dev`, the Tweaks bar). The only
+// .astro file besides the routes.
 import '@portfolio/ui/styles.css';
 import { getCollection } from 'astro:content';
 import { grounds, type Ground } from '@portfolio/tokens';
 import type { Current } from '@portfolio/ui';
 import { Header, SiteFooter } from '../chrome';
-import Tweaks from '../components/Tweaks.astro';
 import { isPublished } from '../lib/placeholder';
 import { siteFor } from '../lib/site';
 
@@ -34,6 +34,8 @@ const article = current === 'work-case' || entry;
 const R = /^https?:/.test(site.root) ? '/' : site.root;
 const theme = grounds[ground].g;
 const hasLog = (await getCollection('log', isPublished)).length > 0;
+// the Tweaks bar, under `pnpm dev` only (see components/DevTweaks.astro)
+const DevTweaks = import.meta.env.DEV ? (await import('../components/DevTweaks.astro')).default : null;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -67,6 +69,6 @@ const hasLog = (await getCollection('log', isPublished)).length > 0;
 <slot />
 
 <SiteFooter site={site} />
-{import.meta.env.DEV && <Tweaks />}
+{DevTweaks && <DevTweaks />}
 </body>
 </html>

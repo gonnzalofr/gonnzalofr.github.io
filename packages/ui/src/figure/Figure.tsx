@@ -31,13 +31,17 @@ export function Figure({ placement, id, variant, captionId, caption, children, .
 }
 
 /** The scroll box around a drawing wider than a phone: a tab stop, labeled by the figure's caption. */
-export function FigScroll({ children }: { children: ReactNode }) {
-  const { captionId } = useContext(FigureContext);
-  return <div className="fig__scroll" tabIndex={0} role="group" aria-labelledby={captionId}>{children}</div>;
+export function FigScroll({ captionId, children }: {
+  /** The caption's id, for a drawing rendered apart from its Figure (an island is a React tree of its own). */
+  captionId?: string;
+  children: ReactNode;
+}) {
+  const figure = useContext(FigureContext);
+  return <div className="fig__scroll" tabIndex={0} role="group" aria-labelledby={captionId ?? figure.captionId}>{children}</div>;
 }
 
 /** An inline SVG drawing in a scroll box, described by its <title>. Children are the drawing, in literal numbers. */
-export function Diagram({ viewBox, title, fit, overflow, titleId, children }: {
+export function Diagram({ viewBox, title, fit, overflow, titleId, captionId, children }: {
   viewBox: string;
   title: string;
   /** 'start' pins the drawing to the top left when the box is wider than its aspect ratio. */
@@ -45,12 +49,14 @@ export function Diagram({ viewBox, title, fit, overflow, titleId, children }: {
   overflow?: 'visible';
   /** Default `fN-t`; the TMDS island keeps the id its script was written against. */
   titleId?: string;
+  /** See FigScroll. */
+  captionId?: string;
   children: ReactNode;
 }) {
   const { no } = useContext(FigureContext);
   const tid = titleId ?? `f${no}t`;
   return (
-    <FigScroll>
+    <FigScroll captionId={captionId}>
       <svg viewBox={viewBox} preserveAspectRatio={fit && 'xMinYMin meet'} overflow={overflow} role="img" aria-labelledby={tid}>
         <title id={tid}>{title}</title>
         {children}

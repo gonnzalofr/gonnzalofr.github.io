@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import reactStatic from './tools/react-static.mjs';
+import react from '@astrojs/react';
+import preactIslands from './tools/preact-islands.mjs';
 import svgSelfClose from './tools/svg-self-close.mjs';
 
 export default defineConfig({
@@ -19,8 +20,9 @@ export default defineConfig({
       cssMinify: false,
     },
   },
-  // React renders the components to static HTML at build time, with no client runtime (see tools/react-static.mjs).
+  // React renders every component to static HTML at build time; only a component given a client:* directive (the
+  // islands, on the HDMI and HiFi pages) ships JavaScript, and that runs on preact/compat (see tools/preact-islands.mjs).
   // React and the Astro compiler both write `<path …/>` as `<path …></path>`; svgSelfClose puts the hand-written
   // spelling back in dist/.
-  integrations: [reactStatic(), svgSelfClose()],
+  integrations: [react(), preactIslands(), svgSelfClose()],
 });
