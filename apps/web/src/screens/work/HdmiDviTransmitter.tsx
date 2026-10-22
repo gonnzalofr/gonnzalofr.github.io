@@ -1,13 +1,15 @@
 // The HDMI / DVI transmitter: a DVI pipeline in Verilog, verified in simulation; the serializer is still a stub.
+import type { ReactNode } from 'react';
 import { Checklist, H2, MarginNote, Mono, Nb, Page, Prose, ProseBlock, PullQuote } from '@portfolio/ui';
 import { project } from '@portfolio/content';
-import { ControlCodewords, LineTiming, Pipeline, SimulatedFrame, TmdsEncoder } from '../../figures/hdmi-dvi-transmitter';
+import { ControlCodewords, LineTiming, Pipeline, SimulatedFrame, TmdsEncoderFigure } from '../../figures/hdmi-dvi-transmitter';
 import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('hdmi-dvi-transmitter');
 
-function HdmiDviTransmitter() {
+/** `encoder`: the TmdsEncoder island, rendered by the route (only an Astro route can hydrate a component). */
+function HdmiDviTransmitter({ encoder }: { encoder?: ReactNode }) {
   return (
     <main id="main">
       <ProjectHeader project={p}>
@@ -30,7 +32,7 @@ function HdmiDviTransmitter() {
           <H2 id="try">Try the encoder</H2>
           <Prose>Fig.&nbsp;3 is the encoder itself, ported line for line from the RTL to JavaScript so it can be driven from the page. Pick a byte and the figure shows what each stage does with it: the ones count and the XOR or XNOR choice, the nine-bit <Mono>q_m</Mono>, the DC-balance decision with the reason the RTL used, and the ten bits that leave the encoder, drawn <Mono>q[0]</Mono> first as in Fig.&nbsp;2. Set a prior disparity to reach the inversion branch, or feed the ramp to watch <Mono>cnt_r</Mono> accumulate over a video line the way it does for the red-ramp pattern, reset to zero in blanking. Under the figure is a self-check that runs in the reader’s browser every time this page loads: all <Nb>256</Nb> bytes through the encoder and back through a decoder written from the testbench’s, with the transition count and the disparity bound checked over one full line.</Prose>
 
-          <TmdsEncoder />
+          <TmdsEncoderFigure>{encoder}</TmdsEncoderFigure>
 
           <PullQuote kicker="verification"><Mono>decode(encode(d)) == d</Mono>, on every symbol, against a decoder written independently.</PullQuote>
 

@@ -1,0 +1,6 @@
+---
+// The Tweaks bar as an island. Document.astro imports this file only under `pnpm dev`: Astro bundles every client:only
+// component in the files it compiles, used or not, so a build that never imports it ships no Tweaks code in dist/.
+import Tweaks from './Tweaks';
+---
+<Tweaks client:only="react" />

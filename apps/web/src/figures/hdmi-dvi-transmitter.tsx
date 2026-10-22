@@ -1,5 +1,6 @@
-// The HDMI / DVI transmitter's drawings, the TMDS encoder (static markup for src/scripts/tmds.js) and the XSIM frame.
+// The HDMI / DVI transmitter's drawings, the TMDS encoder's figure (around its island) and the XSIM frame.
 // Waveforms are drawn to scale from the timing numbers and the encoder's output; nothing here is generated.
+import type { ReactNode } from 'react';
 import { ArrowMarker, Diagram, Envelope, EnvelopeLabel, Figure, ScaleBar } from '@portfolio/ui';
 
 export function LineTiming() {
@@ -51,9 +52,9 @@ export function ControlCodewords() {
   );
 }
 
-/** The encoder on one byte, as it renders without JavaScript (d = 0x47, cnt_r 0). src/scripts/tmds.js enables the
- *  controls and redraws the waveforms, texts and trace by these ids; the <output> is the one status region on the site. */
-export function TmdsEncoder() {
+/** The encoder demo's figure. Its body is the TmdsEncoder island (@portfolio/ui/islands/tmds-encoder), which the route
+ *  renders and the page passes in, since only an Astro route can hydrate a component; it keeps these two ids. */
+export function TmdsEncoderFigure({ children }: { children: ReactNode }) {
   return (
     <Figure
       placement="bleed"
@@ -61,53 +62,7 @@ export function TmdsEncoder() {
       captionId="fig-tmds-cap"
       caption="The encoder, ported from the RTL: the input byte, q_m after the transition stage and q_out after DC balancing, drawn q[0] first as transmitted, written msb first. Below, the running disparity cnt_r at ±8 full scale against the input byte d: at rest, the first 256-symbol pass of the ramp from cnt_r = 0; after a slider moves, this one symbol before and after, drawn at its byte."
     >
-      <div className="tmds__ctl">
-        <label>d = <span id="tmds-d">0x47</span><input id="tmds-in" type="range" min="0" max="255" defaultValue="71" disabled /></label>
-        <label>prior cnt_r = <span id="tmds-c">0</span><input id="tmds-cnt" type="range" min="-8" max="8" step="2" defaultValue="0" disabled /></label>
-        <label><input id="tmds-run" type="checkbox" disabled />feed the ramp</label>
-        <output id="tmds-out" htmlFor="tmds-in tmds-cnt" className="tmds__check"><span id="tmds-res">q_out = 0100111101 · cnt_r 0 → +2</span><span className="tmds__why" id="tmds-why">{'N1 = 4 ones in d, d[0] = 1 → XOR chain, q_m[8] = 1\nq_m[7:0]: 5 ones, 3 zeros · cnt_r = 0 → q_m[8] decides → keep, q_out[9] = 0'}</span></output>
-      </div>
-      <Diagram viewBox="0 0 800 320" titleId="ftt" title="The TMDS encoder on one byte: the input bits, the nine-bit q_m after the transition-minimizing stage, and the ten-bit q_out after DC balancing, each drawn as a stepped waveform bit 0 first and written beside it msb first, with the ones count, the chaining choice, the inversion decision and the running disparity before and after. Below, the running disparity as a stepped trace, plus or minus 8 full scale, against the input byte d, 0x00 to 0xFF.">
-        <text x="130" y="11">bit 0 first, as transmitted</text>
-        <text x="520" y="11">written msb first</text>
-
-        <text className="t-ink" id="tl-d" x="0" y="38">d = 0x47</text>
-        <path className="s-rule" d="M130 43 V47 M166 43 V47 M202 43 V47 M238 43 V47 M274 43 V47 M310 43 V47 M346 43 V47 M382 43 V47 M418 43 V47" />
-        <path className="crisp" id="tw-d" d="M130 23 H238 V43 H346 V23 H382 V43 H418" />
-        <text className="t-ink" id="ts-d" x="520" y="38">01000111</text>
-        <text className="t-ink" id="tn-d" x="620" y="38">N1 = 4</text>
-
-        <text className="t-ink" x="0" y="76">q_m</text>
-        <path className="s-rule" d="M130 81 V85 M166 81 V85 M202 81 V85 M238 81 V85 M274 81 V85 M310 81 V85 M346 81 V85 M382 81 V85 M418 81 V85 M454 81 V85" />
-        <path className="crisp" id="tw-m" d="M130 61 H166 V81 H202 V61 H346 V81 H418 V61 H454" />
-        <text className="t-ink" id="ts-m" x="520" y="76">100111101</text>
-        <text className="t-ink" id="tn-m" x="620" y="76">XOR · q_m[8] = 1</text>
-
-        <text className="t-ink" x="0" y="114">q_out</text>
-        <path className="s-rule" d="M130 119 V123 M166 119 V123 M202 119 V123 M238 119 V123 M274 119 V123 M310 119 V123 M346 119 V123 M382 119 V123 M418 119 V123 M454 119 V123 M490 119 V123" />
-        <path className="crisp" id="tw-q" d="M130 99 H166 V119 H202 V99 H346 V119 H418 V99 H454 V119 H490" />
-        <text className="t-ink" id="ts-q" x="520" y="114">0100111101</text>
-        <text className="t-ink" id="tn-q" x="620" y="114">cnt_r 0 → +2</text>
-
-        <text className="t-ink" id="tx-1" x="0" y="141">N1 = 4 ones in d, d[0] = 1 → XOR chain, q_m[8] = 1</text>
-        <text className="t-ink" id="tx-2" x="0" y="157">q_m[7:0]: 5 ones, 3 zeros · cnt_r = 0 → q_m[8] decides → keep, q_out[9] = 0</text>
-
-        <g transform="translate(0 122)">
-          <path className="s-axis" d="M0 110 H768 M764 46 H768 M764 174 H768" />
-          <polyline className="crisp s-ramp" id="tmds-trace" points="183,110 213,110 213,94 246,94" />
-          <path className="s-axis" d="M1.5 178 V182 M193.5 178 V182 M385.5 178 V182 M577.5 178 V182 M766.5 178 V182" />
-          <text x="0" y="196">0x00</text>
-          <text x="193.5" y="196" textAnchor="middle">0x40</text>
-          <text x="385.5" y="196" textAnchor="middle">0x80</text>
-          <text x="577.5" y="196" textAnchor="middle">0xC0</text>
-          <text x="766.5" y="196" textAnchor="end">0xFF</text>
-          <text x="780" y="196">d</text>
-          <text x="772" y="50">+8</text>
-          <text x="772" y="114">0</text>
-          <text x="772" y="178">−8</text>
-        </g>
-      </Diagram>
-      <p className="tmds__check" id="tmds-check">self-check: not run — this line needs JavaScript</p>
+      {children}
     </Figure>
   );
 }

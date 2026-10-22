@@ -5,14 +5,18 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./islands/tmds-encoder": "./src/islands/TmdsEncoder.tsx",
+    "./islands/board-viewer": "./src/islands/BoardViewer.tsx"
   },
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@portfolio/tokens": "workspace:*"
+    "@portfolio/tmds": "workspace:*",
+    "@portfolio/tokens": "workspace:*",
+    "three": "^0.186.1"
   },
   "peerDependencies": {
     "react": "^19.3.0"
@@ -21,6 +25,7 @@
     "@portfolio/tsconfig": "workspace:*",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "typescript": "7.0.2",
