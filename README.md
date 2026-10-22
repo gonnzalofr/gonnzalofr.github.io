@@ -1,26 +1,30 @@
 # gonzaloferrero — portfolio
 
-A static site built with Astro: hand-written pages, one stylesheet, a small site script, and page-local scripts for the TMDS encoder demo (HDMI page) and the 3D board (HiFi page). The build writes plain HTML to `apps/web/dist/`; the site works with JavaScript disabled.
+A static site: React components rendered to HTML by Astro at build time, one stylesheet, a small site script, and page-local scripts for the TMDS encoder demo (HDMI page) and the 3D board (HiFi page). The build writes plain HTML to `apps/web/dist/`; no page ships React, and the site works with JavaScript disabled.
 
-The repository is a pnpm + Turborepo workspace. The site is the app in `apps/web/`, and the paths below under `src/`, `public/` and `tools/` are relative to it. It is being moved to React components rendered by Astro, one phase at a time: see `docs/migration-plan.md`.
+The repository is a pnpm + Turborepo workspace. The site is the app in `apps/web/`, and the paths below under `src/`, `public/` and `tools/` are relative to it. The move to Turborepo and React is done through phase 4 (every page renders from React components); what is left is in `docs/migration-plan.md`.
 
 The design is "Reel" (design context: `.impeccable.md`; references and direction studies are in `.design/`, which is kept out of git). It was developed on the `creative` branch and merged into `main` on 4 October 2026; the earlier monochrome monograph design is in the history before that merge (`3655a10`). `main` is the branch the deploy workflow publishes.
 
 ```
-src/pages/index.astro                 home: an introduction (name, lead, about, facts), then one band per project on its own ground, the Daedalus band and the smaller builds
-src/pages/work/index.astro            all work: the four case studies + five smaller builds
-src/pages/work/*.astro                hdmi-dvi-transmitter, hifi-player, venus-rover, rock-your-baby
-src/pages/notes.astro                 Student Team Daedalus + the BSc EE curriculum, quartile by quartile
-src/pages/cv.astro                    one-page CV (also printed to public/assets/Gonzalo-Ferrero-Martin-CV.pdf; re-print it when cv.astro changes)
-src/pages/log/                        bench log: index + one page per entry in src/content/log/*.md
-src/layouts/Base.astro                the page shell: head, four-corner chrome, <main id="main">, Contact footer; `ground` prop picks the page's ground
-src/components/                       Nav, Footer (Contact), CaseHeader, Turn (prev/next), Curriculum, Timeline, KeyValueRows, Inline,
-                                      glimpses/ (each project's evidence on its home band), Tweaks (dev only)
+src/pages/                            the routes, one thin .astro file each: its title, description and ground, and the page component it renders
+src/screens/Home.tsx                  home: an introduction (name, lead, about, facts), then one band per project on its own ground, the Daedalus band and the smaller builds
+src/screens/WorkIndex.tsx             all work: the four case studies + five smaller builds
+src/screens/work/*.tsx                the case studies: HdmiDviTransmitter, HifiPlayer, VenusRover, RockYourBaby (case.tsx: the header and prev/next from the project's data)
+src/screens/Notes.tsx                 Student Team Daedalus + the BSc EE curriculum, quartile by quartile
+src/screens/Cv.tsx                    one-page CV (also printed to public/assets/Gonzalo-Ferrero-Martin-CV.pdf; re-print it when the CV changes)
+src/screens/LogIndex.tsx, LogEntry.tsx  bench log: index + one page per entry in src/content/log/*.md
+src/screens/NotFound.tsx              the 404 (absolute links: GitHub Pages serves it at any depth)
+src/figures/                          the drawings, one file per project, as React components (literal coordinates); glimpses.tsx: each project's evidence on its home band
+src/layouts/Document.astro            the document: head, skip link, the four-corner header and the Contact footer (src/chrome.tsx) around the page; `ground` picks the page's ground
+src/lib/                              site.ts (what the components need to know about the page), paths.ts (its root prefix), placeholder.ts (the placeholder gate)
+src/components/Tweaks.astro           the tweaks bar (dev only)
 src/scripts/site.js                   sticky-head height + scrollable-figure tab stops
 src/scripts/bits.js                   the TMDS bit field (same encoder port as tmds.js); not loaded by any page at the moment
 src/scripts/tmds.js                   the interactive TMDS encoder on the HDMI page (loaded by that page only)
 public/                               copied to dist/ as is: assets/, fonts/, .nojekyll
 tools/svg-self-close.mjs              build hook that restores self-closed SVG elements in dist/
+tools/react-static.mjs                @astrojs/react without its client runtime: React renders HTML at build time only (until the islands move to React)
 tools/share-card.html                 the share card (every page's og:image), rendered to public/assets/share-card.png
 astro.config.mjs                      build.format 'preserve' keeps the URLs work/x.html, notes.html, …
 
@@ -28,8 +32,9 @@ At the repository root:
 packages/tokens/                      the design tokens in TypeScript (grounds, inks, type scale, space, motion) → generated tokens.css; contrast test
 packages/content/                     the site's facts as typed, Zod-validated data: person, projects, builds, team, curriculum, CV;
                                       views.ts derives counts, date lines, kickers, prev/next and the intro facts from them
+packages/ui/                          the design system: React components (src/<group>/*.tsx) beside the CSS that styles them; render tests in test/
 packages/ui/src/styles.css            the whole design system's CSS: one file per component or concern, imported in cascade order
-tooling/tsconfig/                     shared strict tsconfig presets (base, node)
+tooling/tsconfig/                     shared strict tsconfig presets (base, node, react)
 tooling/check-site/check_site.py      the mechanical checker run on apps/web/dist/ (see below)
 tooling/check-site/dist_diff.py       the parity check: compares two builds page by page (see "Parity" below)
 turbo.json, pnpm-workspace.yaml       the task graph (tokens build → site build → check; test, typecheck) and the workspace; package.json pins pnpm
@@ -43,8 +48,8 @@ pnpm install       # once, and after every pull that changes pnpm-lock.yaml
 pnpm dev           # dev server with live reload at http://localhost:4321/
 pnpm build         # writes apps/web/dist/
 pnpm check         # build, then tooling/check-site/check_site.py on apps/web/dist — the same check the deploy workflow runs
-pnpm test          # unit tests (the tokens' contrast and CSS generation)
-pnpm typecheck     # tsc on every TypeScript package
+pnpm test          # unit tests: the tokens' contrast and CSS generation, the content's dates and views, the components' render tests
+pnpm typecheck     # tsc on every TypeScript package, astro check on the site
 ```
 
 Node 22.18 or newer (the tokens build runs TypeScript directly) and Python 3 are needed (the checker is a Python script with no dependencies). `corepack enable` writes the `pnpm` command next to Node's own; if that folder is not writable, run `npm install -g corepack` first or open the terminal as administrator once. Turbo caches builds in `.turbo/`: an unchanged `apps/web` is not rebuilt.
@@ -76,15 +81,15 @@ Strings that must never ship but must not be written in the repository either (y
 
 ## Editing
 
-- Grounds: every page passes `ground` to `Base` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the header of the generated `tokens.css` (and asserted by `pnpm test`). The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground. The page's scroll bar follows the page's ground too (dim thumb on the ground; the dark grounds switch the browser to its dark scheme), from rules generated with the grounds.
-- A new project: one entry in `packages/content/src/projects.ts` (its ground, dates, status, and the copy each place shows), a glimpse in `src/components/glimpses/` registered in `index.astro`, and its case-study page. The home band, the work-index row, the 404 link, the CV entry, the prev/next cycle and every count ("4 case studies · …") follow from the data.
+- Grounds: every route passes `ground` to `Document` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the header of the generated `tokens.css` (and asserted by `pnpm test`). The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground. The page's scroll bar follows the page's ground too (dim thumb on the ground; the dark grounds switch the browser to its dark scheme), from rules generated with the grounds.
+- A new project: one entry in `packages/content/src/projects.ts` (its ground, dates, status, and the copy each place shows), a glimpse in `src/figures/glimpses.tsx` registered there by its slug, and its case study (a page component in `src/screens/work/`, its drawings in `src/figures/`, and a route in `src/pages/work/`). The home band, the work-index row, the 404 link, the CV entry, the prev/next cycle and every count ("4 case studies · …") follow from the data.
 - Tweaks bar: under `pnpm dev` a small "tweaks" button (bottom left) adjusts name size, width and weight, text size, density, motion and warmth live, and "Copy values" gives the values as CSS; they belong in `packages/tokens/src/tokens.ts`. It is never rendered in a build.
-- Facts and short copy live in `packages/content` (dates as `2026-07`, written out by `when()`: "Jul 2026 – present", or in full on the CV); the long prose of each case study, Notes and the intro is still in its `.astro` page. Short copy is *inline*: text with only the marks below, checked by the schema, with links inside the site written from the root as `~/notes.html#daedalus`. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
-- Every figure is inline SVG drawn from real numbers, or an `<img class="fig__img">` for photographs and renders; captions start with `<span class="fig__no">Fig. N</span> —`.
+- Facts and short copy live in `packages/content` (dates as `2026-07`, written out by `when()`: "Jul 2026 – present", or in full on the CV); the long prose of each case study, Notes and the intro is in its page component (`src/screens/`), with `<Prose>`, `<Nb>`, `<Mono>` and the other components from `@portfolio/ui`. Short copy is *inline*: text with only the marks below, checked by the schema, with links inside the site written from the root as `~/notes.html#daedalus`. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
+- Every figure is inline SVG drawn from real numbers (`<Figure>` with a `<Diagram>`), or a photograph or render (`<PhotoFigure>`); `Figure` numbers the figures in page order and writes the "Fig. N —" caption prefix. Figure numbers cited in the prose are still written by hand.
 - Status is only ever the dossier's words plus the small open square (`<span class="status">in progress</span>`); never colour.
 - Motion is CSS transitions on state changes only (link underlines, the prev/next blocks); all of it is instant under `prefers-reduced-motion`. There is no animation library: anime.js was evaluated in September 2026 and left out. Data figures never tween — a waveform, trace or codeword changes by redrawing, never by interpolating between states the hardware did not produce.
 - The TMDS demo's `<output>` is the one implicit status region on the site (written per change, never per tick); the checker still bans the `aria-live` attribute.
-- Placeholder images never ship: `src/lib/placeholder.ts` leaves out every figure whose file is still one of the five labeled placeholders, and a log entry stays unpublished until its images are real. Saving the real file is the only step; the next build shows it. The checker fails the build if a placeholder reaches a page.
+- Placeholder images never ship: `src/lib/placeholder.ts` recognizes the five labeled placeholders, `<PhotoFigure>` (and `usePublished()`) leave out every figure whose file is still one of them, and a log entry stays unpublished until its images are real. Saving the real file is the only step; the next build shows it. The checker fails the build if a placeholder reaches a page.
 - Type: Anybody (variable width and weight) for everything you read — build names and section heads at weight 800 and width 150, prose at 400 and width 100 — and Azeret Mono for specs, labels, captions and figure text. Both are self-hosted latin subsets in `public/fonts/`; Anybody borrows Azeret Mono's × (its own is dot-sized).
 - Layout uses a fixed set of placement classes (`.col-margin`, `.col-head`, `.col-prose`, `.fig--right`, `.fig--bleed`, …). Don't set `grid-column` anywhere else.
 - Styles: a new component's CSS goes in its own file under `packages/ui/src/` and is imported in `styles.css` at the place its rules belong in the cascade (the list there is in cascade order, not alphabetical). Token values (colors, sizes, spacing) live only in `packages/tokens/src/tokens.ts`.

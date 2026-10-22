@@ -1,5 +1,5 @@
 ---
-// Dev-only tweaks bar (rendered only under `npm run dev`; Base.astro gates it with import.meta.env.DEV, so it never
+// Dev-only tweaks bar (rendered only under `pnpm dev`; Document.astro gates it with import.meta.env.DEV, so it never
 // reaches dist/). Each control writes one custom property on :root that the stylesheet already reads; "Copy values" gives
 // the settings as CSS; the values belong in packages/tokens/src/tokens.ts. Settings persist in localStorage for this browser only.
 import { grounds, inks } from '@portfolio/tokens';

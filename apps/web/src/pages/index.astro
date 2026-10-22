@@ -1,89 +1,13 @@
 ---
-import Base from '../layouts/Base.astro';
-import { builds, person, projects, team, views } from '@portfolio/content';
-import Inline from '../components/Inline.astro';
-import HdmiGlimpse from '../components/glimpses/HdmiGlimpse.astro';
-import VenusGlimpse from '../components/glimpses/VenusGlimpse.astro';
-import HifiGlimpse from '../components/glimpses/HifiGlimpse.astro';
-import RybGlimpse from '../components/glimpses/RybGlimpse.astro';
-// Each project's band shows a glimpse of its evidence; a new project needs one here.
-const glimpses: Record<string, typeof HdmiGlimpse> = {
-  'hdmi-dvi-transmitter': HdmiGlimpse, 'venus-rover': VenusGlimpse, 'hifi-player': HifiGlimpse, 'rock-your-baby': RybGlimpse,
-};
+import Document from '../layouts/Document.astro';
+import Home from '../screens/Home';
+import { siteFor } from '../lib/site';
 ---
-<Base
+<Document
   title="Gonzalo Ferrero Martín — Electrical Engineering student, TU/e"
   description="Electrical Engineering student at TU/e, Eindhoven. PCB design, Verilog on FPGAs, embedded C, and the testbenches that check the result."
-  kind="home"
-  depth={0}
+  current="home"
   ground="paper"
 >
-<main id="main">
-
-  <section class="page intro">
-    <p class="kicker col-full"><Inline html={views.homeKicker} /></p>
-    <h1 class="col-full">{person.name.given} <span class="nb">{person.name.family}</span></h1>
-    <p class="deck col-prose">Second-year Electrical Engineering student at TU/e, Eindhoven. I do circuit and PCB design, Verilog on FPGAs and embedded C, and I write the testbenches that check the result.</p>
-
-    <div class="intro__about col-prose">
-      <p>I like working the whole length of a device rather than one layer of it: the board, the HDL, the firmware on ESP32 and PYNQ boards, and the Python tooling that ties a bench together. Outside the coursework I build things — a DVI transmitter, the design of a battery-powered music player — and inside it I have been on a rover team and a first-year embedded project. At Student Team Daedalus, from January to 14 October 2026, I did PCB design, embedded programming and bench verification for a solar-powered autonomous aircraft for wildfire surveillance.</p>
-      <p>What I care about is verification, not just getting something to blink: a self-checking testbench that decodes every symbol the encoder emits, a simulated frame dumped to a file with seven timing counts checked against constants, a sensor read confirmed by a vote before the robot acts on it.</p>
-      <p class="intro__act"><a href="cv.html">Read the CV</a> · <a href="assets/Gonzalo-Ferrero-Martin-CV.pdf">PDF, one A4 page</a> · <a href="#contact">Contact</a></p>
-    </div>
-
-    <dl class="intro__facts col-margin">
-      {views.introFacts().map((f) => <div><dt>{f.label}</dt><dd><Inline html={f.value} /></dd></div>)}
-    </dl>
-  </section>
-
-  <section class="choose" id="work" aria-labelledby="work-h">
-    <div class="page choose__head">
-      <p class="kicker col-full">{views.homeWorkKicker}</p>
-      <h2 class="col-full" id="work-h">Work</h2>
-    </div>
-
-    <ol class="bands">
-      {projects.map((p) => {
-        const Glimpse = glimpses[p.slug]!;
-        return (
-      <li class="band" data-ground={p.ground}>
-        <div class="page band__in">
-          <div class="band__text">
-            <p class="band__no">{p.no}</p>
-            <h3 class="band__name"><a href={`work/${p.slug}.html`}>{p.shortName}</a></h3>
-            <p class="band__line"><Inline html={p.band.line} /></p>
-            <p class="band__meta"><Inline html={views.bandMeta(p)} /></p>
-          </div>
-          <Glimpse />
-        </div>
-      </li>
-        );
-      })}
-
-      <li class="band band--team" data-ground={team.ground}>
-        <div class="page band__in">
-          <div class="band__text">
-            <p class="band__no">Team</p>
-            <h3 class="band__name"><a href={team.path}>{team.name}</a></h3>
-            <p class="band__line"><Inline html={team.line} /></p>
-            <p class="band__meta"><Inline html={views.teamBandMeta} /></p>
-          </div>
-          <div class="band__fig band__fig--spec">
-            <dl class="spec">
-              {team.aircraft.map((f) => <div><dt>{f.label}</dt><dd><Inline html={f.value} /></dd></div>)}
-            </dl>
-          </div>
-        </div>
-      </li>
-    </ol>
-
-    <div class="page builds">
-      <p class="kicker col-full">Smaller builds · coursework and side projects</p>
-      <ul class="builds__list col-full">
-        {builds.map((b) => <li><a href={`work/index.html#${b.id}`}><Inline html={b.title} /></a> <span>{views.buildTag(b)}</span></li>)}
-      </ul>
-    </div>
-  </section>
-
-</main>
-</Base>
+<Home site={siteFor(Astro.url, Astro.site)} />
+</Document>

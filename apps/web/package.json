@@ -7,13 +7,23 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "python3 ../../tooling/check-site/check_site.py dist"
+    "check": "python3 ../../tooling/check-site/check_site.py dist",
+    "typecheck": "astro check"
   },
   "dependencies": {
+    "@astrojs/react": "7.0.1",
     "@portfolio/content": "workspace:*",
     "@portfolio/tokens": "workspace:*",
     "@portfolio/ui": "workspace:*",
     "astro": "7.3.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "6.0.3"
   }
 }

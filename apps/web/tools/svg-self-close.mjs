@@ -1,11 +1,13 @@
 // Astro integration: restore self-closing SVG elements in the built HTML.
 //
-// The Astro compiler prints every empty SVG element as an open/close pair
-// (`<path d="…"></path>`), while the hand-written pages this site was ported
-// from wrote them self-closed (`<path d="…"/>`). The two spellings parse to the
-// same DOM (these are SVG foreign-content elements), but the port is required
-// to reproduce the pre-Astro markup byte for byte, so this hook rewrites the
-// empty pairs back to `<name …/>` in every dist/**/*.html after the build.
+// The Astro compiler and React's server renderer both print every empty SVG
+// element as an open/close pair (`<path d="…"></path>`), while the hand-written
+// pages this site was ported from wrote them self-closed (`<path d="…"/>`). The
+// two spellings parse to the same DOM (these are SVG foreign-content elements),
+// but the port is required to reproduce the pre-Astro markup byte for byte, so
+// this hook rewrites the empty pairs back to `<name …/>` in every
+// dist/**/*.html after the build. (Phase 4 checked that it is still needed:
+// without it the parity check reports every drawing.)
 // Only element names that are always empty in SVG are touched.
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
