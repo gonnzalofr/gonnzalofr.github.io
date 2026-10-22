@@ -1,8 +1,0 @@
----
-// Inline copy from @portfolio/content (validated: only the site's inline marks), with "~/" links resolved for this page.
-import { resolve } from '@portfolio/content';
-import { rootPrefix } from '../lib/paths';
-interface Props { html: string }
-const html = resolve(Astro.props.html, rootPrefix(Astro.url, Astro.site));
----
-<Fragment set:html={html} />

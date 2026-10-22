@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Portfolio: React components, compiled by Vite (JSX, DOM types, bundler resolution, .ts/.tsx import specifiers)",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "types": []
+  }
+}

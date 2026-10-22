@@ -1,67 +1,13 @@
 ---
-import Base from '../layouts/Base.astro';
-import Inline from '../components/Inline.astro';
-import Timeline from '../components/Timeline.astro';
-import KeyValueRows from '../components/KeyValueRows.astro';
-import { cv, person, views } from '@portfolio/content';
-// The CV: one page on screen in the site's typography, and one A4 page when printed (packages/ui/src/global/print.css hides the
-// running head and footer and compacts the entries). public/assets/Gonzalo-Ferrero-Martin-CV.pdf is
-// printed from this page with headless Edge after a build; regenerate it whenever this file changes.
-// The CV's Projects section: each project's CV entry, dated by the project's own dates.
-const projectEntries = views.cvProjects.map((p) => ({ dates: p.dates, role: p.cv.role, text: p.cv.text }));
-const sections = [
-  { id: 'education', reading: views.educationReading, title: 'Education', entries: cv.education },
-  { id: 'projects', reading: views.cvProjectsReading, title: 'Projects', entries: projectEntries },
-  { id: 'experience', reading: views.experienceReading, title: 'Experience', entries: cv.experience },
-];
-const contactCells = [
-  { label: 'Email', html: `<a href="mailto:${person.email}">${person.email}</a>` },
-  { label: 'Portfolio', html: `<a href="${person.site.url}">${person.site.label}</a>` },
-  { label: 'Links', html: person.links.map((l) => `<a href="${l.href}" rel="noopener">${l.label}</a>`).join('<br>') },
-  { label: 'Based', html: person.based },
-];
+import Document from '../layouts/Document.astro';
+import Cv from '../screens/Cv';
+import { siteFor } from '../lib/site';
 ---
-<Base
+<Document
   title="CV — Gonzalo Ferrero Martín"
   description="CV of Gonzalo Ferrero Martín, second-year Electrical Engineering student at TU/e, Eindhoven: education, projects, experience, skills and languages."
-  kind="cv"
-  depth={0}
+  current="cv"
   ground="paper"
 >
-<main id="main" class="cv">
-
-  <section class="page cs">
-    <p class="kicker col-head">{views.cvKicker}</p>
-    <h1 class="col-head">{person.name.given} <span class="nb">{person.name.family}</span></h1>
-    <p class="deck col-prose">Electrical Engineering student — hardware and software.</p>
-    <p class="col-prose cv__pdf"><a href={person.cvPdf.path}>Download the PDF — one A4 page</a></p>
-    <dl class="meta col-full">
-      {contactCells.map((c) => <div class="meta__cell"><dt>{c.label}</dt><dd><Inline html={c.html} /></dd></div>)}
-    </dl>
-  </section>
-
-  {sections.map((sec) => (
-  <section class="page sec" id={sec.id}>
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><Inline html={sec.reading} /></p>
-    <h2 class="col-head">{sec.title}</h2>
-    <Timeline entries={sec.entries} />
-  </section>
-  ))}
-
-  <section class="page sec" id="skills">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">{cv.skills.reading}</p>
-    <h2 class="col-head">Skills</h2>
-    <KeyValueRows rows={cv.skills.rows} parts={cv.skills.parts} />
-  </section>
-
-  <section class="page sec" id="languages">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin">{cv.languages.reading}</p>
-    <h2 class="col-head">Languages</h2>
-    <KeyValueRows rows={cv.languages.rows} />
-  </section>
-
-</main>
-</Base>
+<Cv site={siteFor(Astro.url, Astro.site)} />
+</Document>

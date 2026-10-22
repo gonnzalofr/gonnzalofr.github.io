@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import reactStatic from './tools/react-static.mjs';
 import svgSelfClose from './tools/svg-self-close.mjs';
 
 export default defineConfig({
@@ -18,6 +19,8 @@ export default defineConfig({
       cssMinify: false,
     },
   },
-  // the compiler expands `<path …/>` to `<path …></path>`; put the hand-written spelling back in dist/
-  integrations: [svgSelfClose()],
+  // React renders the components to static HTML at build time, with no client runtime (see tools/react-static.mjs).
+  // React and the Astro compiler both write `<path …/>` as `<path …></path>`; svgSelfClose puts the hand-written
+  // spelling back in dist/.
+  integrations: [reactStatic(), svgSelfClose()],
 });

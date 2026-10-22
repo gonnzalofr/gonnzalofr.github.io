@@ -1,56 +1,13 @@
 ---
-import Base from '../layouts/Base.astro';
-import Inline from '../components/Inline.astro';
-import Curriculum from '../components/Curriculum.astro';
-import { team, views, when } from '@portfolio/content';
-const memberCells = [
-  { label: 'Department', html: team.department },
-  { label: 'Role', html: team.role },
-  { label: 'Member', html: when(team.dates, 'long') },
-  { label: 'Team', html: `<a href="${team.url}" rel="noopener">${team.urlLabel} <span aria-hidden="true">↗</span></a>` },
-];
+import Document from '../layouts/Document.astro';
+import Notes from '../screens/Notes';
+import { siteFor } from '../lib/site';
 ---
-<Base
+<Document
   title="Notes — Gonzalo Ferrero Martín"
   description="Student Team Daedalus, a solar-powered autonomous aircraft for wildfire surveillance, and my BSc Electrical Engineering curriculum at TU/e, by quartile."
-  kind="notes"
-  depth={0}
+  current="notes"
   ground="dusk"
 >
-<main id="main">
-
-  <section class="page cs">
-    <p class="kicker col-head">Student Team Daedalus · Curriculum</p>
-    <h1 class="col-head">Notes</h1>
-    <p class="deck col-prose">The student team I built with, and what I am studying — quartile by quartile.</p>
-  </section>
-
-  <section class="page sec" id="daedalus">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><Inline html={views.teamReading} /></p>
-    <h2 class="col-head">{team.name}</h2>
-
-    <p class="col-prose"><a href="https://www.teamdaedalus.eu/" rel="noopener">Team Daedalus</a> is a multidisciplinary student team at Eindhoven University of Technology, founded in 2021 and based at the TU/e Innovation Space: <span class="nb">39</span> students from more than <span class="nb">15</span> countries building a solar-powered autonomous aircraft for prolonged aerial surveillance, aimed at wildfire detection. Airframes, avionics and power electronics are all designed, manufactured and tested in-house, in iterative prototypes called Lapyx — each one a refinement of the last, each crash folded into the next build.</p>
-
-    <p class="col-prose">The current aircraft, Lapyx 4, has a <span class="nb">4.0 m</span> wingspan, weighs <span class="nb">9.2 kg</span>, carries <span class="nb">225 W</span> of solar cells across the upper wing and three <span class="nb">16 Ah</span> cells in the fuselage, and flies with a fully integrated autopilot. Its maiden flight on 25 February 2026 ran in both manual and autopilot modes, completed a <span class="nb">100 km/h</span> speed test and validated an estimated endurance of about seven hours on battery alone — before a mechanical failure cut the power and ended the flight in a crash. The team rebuilt it over the spring; the second flight was planned for September 2026.</p>
-
-    <p class="col-prose">I joined in January 2026 as an electrical engineer, one of six in the Electrical / Embedded Systems department, and was a member until 14 October 2026. The department owns the aircraft’s electronics — the systems in development include the Daedawatt Ultra MPPT solar charge controller, the DaedaLink avionics bus, the DaedaFind LTE/GNSS tracker and the DaedaBuzz recovery buzzer — and my part of it was PCB design, embedded programming and bench verification.</p>
-    <p class="col-prose">The electronics are built alongside seven other departments — mechanical and airframe, avionics, computer and machine vision, business, PR and communication, the board — so a board is designed against an airframe that is being built at the same time, a power budget the solar array sets, and avionics written by someone else. The rebuild after the maiden flight worked the same way: the crash’s lessons had to be carried into every subsystem at once, with the second flight already on the calendar for September.</p>
-
-    <dl class="meta col-full">
-      {memberCells.map((c) => <div class="meta__cell"><dt>{c.label}</dt><dd><Inline html={c.html} /></dd></div>)}
-    </dl>
-  </section>
-
-  <section class="page sec" id="curriculum">
-    <hr class="sec__rule col-full">
-    <p class="sec__reading col-margin"><Inline html={views.curriculumReading} /></p>
-    <h2 class="col-head">Curriculum</h2>
-
-    <p class="col-prose">The three-year program, laid out the way TU/e schedules it: four quartiles a year, five credits a course, with the first-year challenge and the bachelor project spanning two quartiles at ten. Year one is complete, with a weighted average of <span class="nb">9.58 / 10</span>. The first half of year two is what I am enrolled in now; everything after that is the plan as it stands, electives included. Each course is listed as its code, its title and its credits in ECTS.</p>
-
-    <Curriculum />
-  </section>
-
-</main>
-</Base>
+<Notes site={siteFor(Astro.url, Astro.site)} />
+</Document>

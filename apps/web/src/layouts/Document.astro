@@ -1,19 +1,20 @@
 ---
+// The document every page is rendered into: <head>, the skip link, the four-corner header, the page (the slot: a
+// React page component from src/screens/), and the Contact footer. The only .astro file besides the routes.
 import '@portfolio/ui/styles.css';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import Tweaks from '../components/Tweaks.astro';
-import type { Kind } from '../components/Nav.astro';
+import { getCollection } from 'astro:content';
 import { grounds, type Ground } from '@portfolio/tokens';
-
-export type { Ground };
+import type { Current } from '@portfolio/ui';
+import { Header, SiteFooter } from '../chrome';
+import Tweaks from '../components/Tweaks.astro';
+import { isPublished } from '../lib/placeholder';
+import { siteFor } from '../lib/site';
 
 interface Props {
   title: string;
   description: string;
-  kind: Kind;
-  /** 0 for root pages, 1 for work/ and log/ pages: sets the "../" prefix on every relative href. */
-  depth: 0 | 1 | 'abs';
+  /** Which part of the site the page is: sets aria-current in the header, and og:type ('article' for a case study). */
+  current: Current;
   /** A log entry (aria-current="true" on the Log link) rather than the log index ("page"). */
   entry?: boolean;
   /** Share-card image (path relative to the site root). Every page uses the site card, assets/share-card.png (the name
@@ -25,12 +26,14 @@ interface Props {
   ground?: Ground;
 }
 const card = { src: 'assets/share-card.png', width: 1200, height: 630, alt: 'Gonzalo Ferrero Martín, BSc Electrical Engineering at TU/e, Eindhoven: PCB design, Verilog on FPGAs, embedded C, and the testbenches that check the result. Beside it, the 640 by 480 frame his XSIM testbench produced: three red ramps inside the hatched blanking of the 800 by 525 frame.' };
-const { title, description, kind, depth, entry = false, ogImage = card, noindex = false, ground = 'paper' } = Astro.props;
-const P = depth === 'abs' ? new URL('./', Astro.site).href : depth ? '../' : '';   // 'abs': the 404 page, served at any depth
+const { title, description, current, entry = false, ogImage = card, noindex = false, ground = 'paper' } = Astro.props;
+const site = siteFor(Astro.url, Astro.site);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const article = kind === 'work-case' || entry;
-const R = depth === 'abs' ? '/' : P;   // the 404 page is served at any depth on the user site: root-relative, like /_astro/, so it works on any host
+const article = current === 'work-case' || entry;
+// the 404 page is served at any depth on the user site: root-relative, like /_astro/, so it works on any host
+const R = /^https?:/.test(site.root) ? '/' : site.root;
 const theme = grounds[ground].g;
+const hasLog = (await getCollection('log', isPublished)).length > 0;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -59,14 +62,11 @@ const theme = grounds[ground].g;
 </head>
 <body data-ground={ground}>
 <a class="skip" href="#main">Skip to content</a>
-<header class="head">
-  <a class="head__name" href={`${P}index.html`}>Gonzalo Ferrero Martín</a>
-  <Nav kind={kind} depth={depth} entry={entry} />
-</header>
+<Header site={site} current={current} entry={entry} hasLog={hasLog} />
 
 <slot />
 
-<Footer />
+<SiteFooter site={site} />
 {import.meta.env.DEV && <Tweaks />}
 </body>
 </html>
