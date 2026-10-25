@@ -8,15 +8,18 @@
   },
   "scripts": {
     "test": "node --test \"test/*.test.ts\"",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@portfolio/tokens": "workspace:*",
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@portfolio/eslint-config": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@types/node": "22.20.5",
+    "eslint": "10.12.0",
     "typescript": "7.0.2"
   }
 }

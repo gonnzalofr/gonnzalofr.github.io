@@ -12,6 +12,7 @@
     "check": "turbo run check",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
     "parity": "node -e \"require('fs').rmSync('apps/web/dist',{recursive:true,force:true})\" && turbo run build && python3 tooling/check-site/dist_diff.py .golden/dist apps/web/dist",
     "golden": "node -e \"require('fs').rmSync('.golden',{recursive:true,force:true})\" && node -e \"require('fs').rmSync('apps/web/dist',{recursive:true,force:true})\" && turbo run build && node -e \"require('fs').cpSync('apps/web/dist','.golden/dist',{recursive:true})\""
   },

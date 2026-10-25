@@ -6,6 +6,7 @@ import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('rock-your-baby');
+export const slug = p.slug;
 
 function RockYourBaby() {
   return (

@@ -7,6 +7,7 @@ import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('hdmi-dvi-transmitter');
+export const slug = p.slug;
 
 /** `encoder`: the TmdsEncoder island, rendered by the route (only an Astro route can hydrate a component). */
 function HdmiDviTransmitter({ encoder }: { encoder?: ReactNode }) {

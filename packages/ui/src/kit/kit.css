@@ -1,0 +1,15 @@
+/* The dev kit's own styling (Kit.tsx). Imported by the /dev/kit route only, so a build never carries it. Everything
+   here is the kit's furniture around the components: labels, rules between grounds. Tokens only. */
+.devkit__title { margin: var(--s4) 0 var(--s3); }
+.devkit__toc { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin-top: var(--s2); font: 400 var(--t-mono)/1.4 var(--f-mono); }
+.devkit__ground { background: var(--g); color: var(--ink); padding-block: var(--s5); border-top: 1px solid var(--hair); }
+.devkit__ground-name { font-size: var(--t-h2); line-height: 1; text-transform: capitalize; }
+.devkit__ground-values { margin: var(--s1) 0 0; font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); }
+.devkit__group-name { margin: var(--s5) 0 0; padding-top: var(--s2); border-top: 1px solid var(--hair); font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); text-transform: uppercase; letter-spacing: .08em; }
+.devkit__item { margin-top: var(--s4); }
+.devkit__label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s1) var(--s2); max-width: 1680px; margin: 0 auto; padding: 0 var(--pad) var(--s1); font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); }
+.devkit__label span:first-child { color: var(--ink); }
+.devkit__note { max-width: 1680px; margin: 0 auto var(--s2); padding-inline: var(--pad); font: 400 var(--t-mono)/1.4 var(--f-mono); color: var(--dim); }
+/* a real page's header sticks to the top; in the kit it is one example among others */
+.devkit .head { position: static; }
+.devkit .foot { margin-top: 0; }
