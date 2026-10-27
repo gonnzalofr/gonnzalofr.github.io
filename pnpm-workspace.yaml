@@ -7,13 +7,3 @@ packages:
 # Denying it explicitly keeps `pnpm install --frozen-lockfile` from failing in CI on an unapproved build script.
 allowBuilds:
   esbuild: false
-
-# The build toolchain is pinned to the versions the npm lockfile had before the move to the workspace
-# (phase 1 of docs/migration-plan.md), so the parity check compares code changes, not minifier changes.
-# Remove these in a commit of their own that also refreshes the golden build (pnpm golden).
-overrides:
-  vite: 8.3.0
-  rolldown: 1.2.8
-  lightningcss: 1.33.0
-  postcss: 8.5.28
-  '@astrojs/compiler-rs': 0.4.0

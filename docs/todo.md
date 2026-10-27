@@ -74,7 +74,7 @@ what the repo itself exposes, and who or what can push to `main`.
 `pnpm audit` found 7 advisories (1 high, 4 moderate, 2 low). `pip-audit` does not apply: the Python tooling uses only
 the standard library.
 
-- [ ] **[soon]** Fix them in one dedicated PR; all come from two things. `vite` 8.3.0 is pinned by `overrides` in
+- [x] **[soon]** Fix them in one dedicated PR (done 27 Oct 2026: `astro` 7.3.8, the `overrides` removed so vite is 8.3.5, `pnpm audit` clean, the minifier diff accepted and the golden build re-taken; see "Notes from the toolchain update" in `migration-plan.md`). All came from two things. `vite` 8.3.0 is pinned by `overrides` in
   `pnpm-workspace.yaml` (held back for the parity checks): fixed in >= 8.3.3 (GHSA-587h-7wmj-h5pm high, GHSA-698v-4r3x-3vcv,
   GHSA-r825-w8mm-5pxw, GHSA-rq7h-c2jc-7f22, GHSA-vfpm-58rq-9qcg, GHSA-9jrq-w75r-8gcw; the first three are in
   `launch-editor`, on Windows). `astro` 7.3.2: fixed in >= 7.3.3 (GHSA-mpr7-6m5w-76rw, CSS injection in View
@@ -83,7 +83,9 @@ the standard library.
   golden build (`pnpm golden`), as the comment in `pnpm-workspace.yaml` says. Until then never run `pnpm dev --host`.
 - [ ] **[later]** Minor updates waiting (`pnpm outdated -r`): react and react-dom 19.3.0 → 19.3.1, preact 11.0.1 →
   11.0.2, `@astrojs/react` 7.0.1 → 7.1.1, `@astrojs/check`, turbo 2.11.7 → 2.11.10, vitest 5.0.3 → 5.0.5. Keep the
-  rule of pinning versions at least two weeks old.
+  rule of pinning versions at least two weeks old. Update 27 Oct 2026: vitest went to 5.0.4 with the audit fix; the rest
+  (react and react-dom 19.3.1, turbo 2.11.8, `@astrojs/react` 7.1.1, `@astrojs/check` 0.9.12, preact 11.0.2) wait for the
+  14-day rule and go in a follow-up PR.
 - [ ] **[soon]** Dependabot is off (alerts and security updates both disabled). Turn on alerts and security updates and
   add `.github/dependabot.yml` for `npm` and `github-actions` (weekly, grouped, with a cooldown so brand-new releases
   are not proposed).
