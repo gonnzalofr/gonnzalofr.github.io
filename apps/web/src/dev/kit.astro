@@ -1,0 +1,22 @@
+---
+// /dev/kit: every component of @portfolio/ui on every ground (packages/ui/src/kit). Injected by tools/dev-routes.mjs
+// under `pnpm dev` only. The tweaks bar comes with Document, as on every page in dev.
+import '@portfolio/ui/kit.css';
+import Document from '../layouts/Document.astro';
+import { Kit } from '@portfolio/ui/kit';
+import { TmdsEncoder } from '@portfolio/ui/islands/tmds-encoder';
+import { BoardViewer } from '@portfolio/ui/islands/board-viewer';
+import { siteFor } from '../lib/site';
+
+const board = {
+  model: '../assets/pcb/hifi-board.glb',
+  label: 'The current HiFi player board as a 3D model. Drag, or use the arrow keys, to turn it.',
+  poster: { src: '../assets/pcb/hifi-board-cut.webp', width: 1600, height: 800, alt: 'The HiFi player board rendered in 3D.' },
+};
+---
+<Document title="Dev kit" description="Every component on every ground (development only)." current="other" noindex ground="paper">
+<Kit site={siteFor(Astro.url, Astro.site)}>
+<TmdsEncoder slot="encoder" client:visible />
+<BoardViewer slot="board" client:visible={{ rootMargin: '600px 0px' }} {...board} />
+</Kit>
+</Document>

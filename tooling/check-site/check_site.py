@@ -127,6 +127,10 @@ css = _g.glob(os.path.join(ROOT, "css", "site.css")) + _g.glob(os.path.join(ROOT
 if not css: errors.append("no stylesheet found (css/site.css or _astro/*.css)")
 for f in css:
     if os.path.getsize(f) > 60_000: warns.append(f"{os.path.relpath(f, ROOT)} is {os.path.getsize(f)} bytes (budget 60000)")
+# the dev kit (/dev/kit, the living style guide) exists under `pnpm dev` only (apps/web/tools/dev-routes.mjs): nothing of it may reach a build
+if os.path.exists(os.path.join(ROOT, "dev")): errors.append("dev/ reached the build: the dev kit is for `pnpm dev` only")
+for f in pages + css:
+    if "devkit" in open(f, encoding="utf-8").read(): errors.append(f"{os.path.relpath(f, ROOT).replace(os.sep, '/')}: dev kit markup or CSS in the build (the class prefix is devkit)")
 # share-card.png is every page's og:image: an absolute URL, which the link check above skips
 for f in (".nojekyll", "assets/favicon.svg", "assets/hdmi-frame-640x480.png", "assets/share-card.png"):
     if not os.path.exists(os.path.join(ROOT, f)): errors.append(f"missing {f}")

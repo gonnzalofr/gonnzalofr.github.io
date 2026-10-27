@@ -2,27 +2,30 @@
 
 A static site: React components rendered to HTML by Astro at build time, one stylesheet, a small site script, and two islands, the only components that run in the browser: the TMDS encoder demo (HDMI page) and the 3D board (HiFi page), hydrated on preact/compat. The build writes plain HTML to `apps/web/dist/`; the other eight pages ship no JavaScript but the site script, and the site works with JavaScript disabled.
 
-The repository is a pnpm + Turborepo workspace. The site is the app in `apps/web/`, and the paths below under `src/`, `public/` and `tools/` are relative to it. The move to Turborepo and React is done through phase 5 (every page renders from React components, and the two interactive figures are React islands); what is left is in `docs/migration-plan.md`.
+The repository is a pnpm + Turborepo workspace. The site is the app in `apps/web/`, and the paths below under `src/`, `public/` and `tools/` are relative to it. The move to Turborepo and React is done (`docs/migration-plan.md`, all six phases): every page renders from React components, the two interactive figures are React islands, and the design system is enforced by lint rules and shown by a dev-only style guide at `/dev/kit`. To add a project, follow `docs/add-a-project.md`.
 
 The design is "Reel" (design context: `.impeccable.md`; references and direction studies are in `.design/`, which is kept out of git). It was developed on the `creative` branch and merged into `main` on 4 October 2026; the earlier monochrome monograph design is in the history before that merge (`3655a10`). `main` is the branch the deploy workflow publishes.
 
 ```
-src/pages/                            the routes, one thin .astro file each: its title, description and ground, the page component it renders, and its island
+src/pages/                            the routes, one thin .astro file each: its title, description and ground, the page component it renders, and its island;
+                                      work/[slug].astro renders every case study (lib/cases.ts finds each project's screen), with the two islands passed in by slug
 src/screens/Home.tsx                  home: an introduction (name, lead, about, facts), then one band per project on its own ground, the Daedalus band and the smaller builds
 src/screens/WorkIndex.tsx             all work: the four case studies + five smaller builds
-src/screens/work/*.tsx                the case studies: HdmiDviTransmitter, HifiPlayer, VenusRover, RockYourBaby (case.tsx: the header and prev/next from the project's data)
+src/screens/work/*.tsx                the case studies: HdmiDviTransmitter, HifiPlayer, VenusRover, RockYourBaby (case.tsx: the header and prev/next from the project's data); each exports its project's slug
 src/screens/Notes.tsx                 Student Team Daedalus + the BSc EE curriculum, quartile by quartile
 src/screens/Cv.tsx                    one-page CV (also printed to public/assets/Gonzalo-Ferrero-Martin-CV.pdf; re-print it when the CV changes)
 src/screens/LogIndex.tsx, LogEntry.tsx  bench log: index + one page per entry in src/content/log/*.md
 src/screens/NotFound.tsx              the 404 (absolute links: GitHub Pages serves it at any depth)
 src/figures/                          the drawings, one file per project, as React components (literal coordinates); glimpses.tsx: each project's evidence on its home band
 src/layouts/Document.astro            the document: head, skip link, the four-corner header and the Contact footer (src/chrome.tsx) around the page; `ground` picks the page's ground
-src/lib/                              site.ts (what the components need to know about the page), paths.ts (its root prefix), placeholder.ts (the placeholder gate)
+src/lib/                              site.ts (what the components need to know about the page), paths.ts (its root prefix), placeholder.ts (the placeholder gate), cases.ts (project → case-study screen)
+src/dev/kit.astro                     the dev kit at /dev/kit, injected by tools/dev-routes.mjs under `pnpm dev` only (never routed in a build)
 src/components/Tweaks.tsx             the tweaks bar (dev only; DevTweaks.astro makes it a client:only island)
 src/scripts/site.js                   sticky-head height + scrollable-figure tab stops
 public/                               copied to dist/ as is: assets/, fonts/, .nojekyll
 tools/svg-self-close.mjs              build hook that restores self-closed SVG elements in dist/
 tools/preact-islands.mjs              the islands' browser bundles get preact/compat for react (the server render stays React)
+tools/dev-routes.mjs                  routes that exist under `pnpm dev` only (the dev kit)
 tools/share-card.html                 the share card (every page's og:image), rendered to public/assets/share-card.png
 astro.config.mjs                      build.format 'preserve' keeps the URLs work/x.html, notes.html, …
 
@@ -33,11 +36,14 @@ packages/content/                     the site's facts as typed, Zod-validated d
 packages/ui/                          the design system: React components (src/<group>/*.tsx) beside the CSS that styles them; render tests in test/
 packages/ui/src/islands/              the two islands, TmdsEncoder and BoardViewer (board-scene.ts: the three.js scene it imports lazily)
 packages/tmds/                        TMDS encode/decode, ported from the RTL (tmds_encoder.v, tb_tmds_encoder.v); tests from the testbench
+packages/ui/src/kit/                  the dev kit: examples.tsx (one example per component; a test fails while an exported component has none), Kit.tsx, kit.css
 packages/ui/src/styles.css            the whole design system's CSS: one file per component or concern, imported in cascade order
 tooling/tsconfig/                     shared strict tsconfig presets (base, node, react)
+tooling/eslint-config/                the lint rules: ESLint's recommended set plus the design system's own (see "Lint" below); eslint.config.mjs at the root re-exports it
 tooling/check-site/check_site.py      the mechanical checker run on apps/web/dist/ (see below)
 tooling/check-site/dist_diff.py       the parity check: compares two builds page by page (see "Parity" below)
-turbo.json, pnpm-workspace.yaml       the task graph (tokens build → site build → check; test, typecheck) and the workspace; package.json pins pnpm
+docs/add-a-project.md                 the steps for a new case study, with the real file names
+turbo.json, pnpm-workspace.yaml       the task graph (tokens build → site build → check; test, typecheck, lint) and the workspace; package.json pins pnpm
 ```
 
 ## Run locally
@@ -50,6 +56,7 @@ pnpm build         # writes apps/web/dist/
 pnpm check         # build, then tooling/check-site/check_site.py on apps/web/dist — the same check the deploy workflow runs
 pnpm test          # unit tests: the TMDS encoder against the testbench's properties, the tokens' contrast and CSS generation, the content's dates and views, the components' render tests
 pnpm typecheck     # tsc on every TypeScript package, astro check on the site
+pnpm lint          # ESLint on every package, with the design system's rules (see "Lint" below)
 ```
 
 Node 22.18 or newer (the tokens build runs TypeScript directly) and Python 3 are needed (the checker is a Python script with no dependencies). `corepack enable` writes the `pnpm` command next to Node's own; if that folder is not writable, run `npm install -g corepack` first or open the terminal as administrator once. Turbo caches builds in `.turbo/`: an unchanged `apps/web` is not rebuilt.
@@ -73,16 +80,18 @@ The site is built by Astro and published by the workflow in `.github/workflows/d
 
    On a free GitHub plan, Pages needs the repository to be **public**, and a public repository publishes its whole git history, not only the current files. Read the history for anything private before switching it to public (or start the public repository from a fresh, single-commit history).
 2. Repository → Settings → Pages → Source: *GitHub Actions* (not "Deploy from a branch").
-3. Every push to `main` then runs the `Deploy` workflow: `pnpm install --frozen-lockfile`, then `pnpm turbo run typecheck test check`, which typechecks, runs the unit tests, builds the site and runs `tooling/check-site/check_site.py` on it (the job fails on any checker error, and nothing is published), then the `apps/web/dist/` folder is uploaded and deployed to <https://gonnzalofr.github.io/>. The workflow can also be started by hand from the Actions tab (*Run workflow*).
+3. Every push to `main` then runs the `Deploy` workflow: `pnpm install --frozen-lockfile`, then `pnpm turbo run lint typecheck test check`, which lints, typechecks, runs the unit tests, builds the site and runs `tooling/check-site/check_site.py` on it (the job fails on any checker error, and nothing is published), then the `apps/web/dist/` folder is uploaded and deployed to <https://gonnzalofr.github.io/>. The workflow can also be started by hand from the Actions tab (*Run workflow*).
 
-`tooling/check-site/check_site.py` walks every `.html` in `apps/web/dist/`: tag balance, exactly one `h1`, `<html lang>`, `<main id="main">` and the skip link on every page, broken relative links, `src`s and `#fragment`s, any `<script>` but the site script on a page without an island, `<img>` without `alt`, duplicate `id`s, banned strings (`[TODO]`, phone numbers, emoji, centered text, dark-scheme CSS), and the presence of `.nojekyll` and the favicon. British spelling and hype vocabulary are warnings. Exit code 1 on errors; warnings do not fail the build.
+`tooling/check-site/check_site.py` walks every `.html` in `apps/web/dist/`: tag balance, exactly one `h1`, `<html lang>`, `<main id="main">` and the skip link on every page, broken relative links, `src`s and `#fragment`s, any `<script>` but the site script on a page without an island, anything of the dev kit (a `dev/` folder, the `devkit` class), `<img>` without `alt`, duplicate `id`s, banned strings (`[TODO]`, phone numbers, emoji, centered text, dark-scheme CSS), and the presence of `.nojekyll` and the favicon. British spelling and hype vocabulary are warnings. Exit code 1 on errors; warnings do not fail the build.
 
 Strings that must never ship but must not be written in the repository either (your own phone numbers, in any spelling) go in the `CHECK_PRIVATE` environment variable as one regex: set it locally (turbo passes it through to the check), and as a repository secret of the same name (Settings → Secrets and variables → Actions) for the deploy workflow. A match fails the build without printing the matched text.
 
 ## Editing
 
 - Grounds: every route passes `ground` to `Document` (`black`, `paper`, `sand`, `walnut`, `dusk`); one ground per project (HDMI black, HiFi paper, Venus sand, Rock Your Baby walnut, Daedalus/Notes dusk). The ink and the quieter ink follow automatically, and each pair is contrast-checked in the header of the generated `tokens.css` (and asserted by `pnpm test`). The prev/next links at the end of a case study carry `data-ground` so they show the next project's ground. The page's scroll bar follows the page's ground too (dim thumb on the ground; the dark grounds switch the browser to its dark scheme), from rules generated with the grounds.
-- A new project: one entry in `packages/content/src/projects.ts` (its ground, dates, status, and the copy each place shows), a glimpse in `src/figures/glimpses.tsx` registered there by its slug, and its case study (a page component in `src/screens/work/`, its drawings in `src/figures/`, and a route in `src/pages/work/`). The home band, the work-index row, the 404 link, the CV entry, the prev/next cycle and every count ("4 case studies · …") follow from the data.
+- A new project is three files: one entry in `packages/content/src/projects.ts` (its ground, dates, status, and the copy each place shows), a glimpse in `src/figures/glimpses.tsx` registered there by its slug, and its case study (a page component in `src/screens/work/` that exports its slug, with its drawings in `src/figures/`; the route is `src/pages/work/[slug].astro`, for every project). The home band, the work-index row, the 404 link, the prev/next cycle and every count ("5 case studies · …") follow from the data. The steps, with what to check by hand (the work index's description, the CV), are in `docs/add-a-project.md`.
+- The dev kit: `pnpm dev` also serves `/dev/kit`, every component of `packages/ui` on every ground, with the tweaks bar. It is made from `packages/ui/src/kit/examples.tsx`, one example per component: a test fails while an exported component has none, so a new component shows up there with a few lines. The route is injected by `tools/dev-routes.mjs` under `pnpm dev` only, so a build has no such page, and the checker fails the build if one appears.
+- Lint (`pnpm lint`, run by CI before the build): `tooling/eslint-config` holds the rules, each with a message that says what to write instead, tested in `tooling/eslint-config/test/`. In the site's source and in `packages/ui`: no `style` prop or `<style>` element; no `font-family` or `font-size` and no hard-coded color or bare size (`#fff`, `rgb(…)`, `'12px'`) in TypeScript, JSX or Astro; no `grid-column` or its relatives outside `packages/ui/src/layout`; no placement class (`col-prose`, `fig--right`, `prose-block`) written in a page (use `<Col span>`); no `dangerouslySetInnerHTML` outside `EntryBody`; no animation library, imported or listed in any `package.json`. In CSS: all of it in `packages/ui/src`, no literal color there (print is the exception), the two families only (`var(--f-sans)`, `var(--f-mono)`), no `!important` (reduced motion is the exception). An exception is a file named in `tooling/eslint-config/src/index.js` with its reason; the Tweaks bar, a development tool, is one.
 - Tweaks bar: under `pnpm dev` a small "tweaks" button (bottom left) adjusts name size, width and weight, text size, density, motion and warmth live, and "Copy values" gives the values as CSS; they belong in `packages/tokens/src/tokens.ts`. It is never rendered in a build.
 - Facts and short copy live in `packages/content` (dates as `2026-07`, written out by `when()`: "Jul 2026 – present", or in full on the CV); the long prose of each case study, Notes and the intro is in its page component (`src/screens/`), with `<Prose>`, `<Nb>`, `<Mono>` and the other components from `@portfolio/ui`. Short copy is *inline*: text with only the marks below, checked by the schema, with links inside the site written from the root as `~/notes.html#daedalus`. Identifiers in prose (hex, signal names, code) are wrapped in `<span class="mono">` so they set in Azeret Mono; quantities stay in the text face inside `<span class="nb">`.
 - Every figure is inline SVG drawn from real numbers (`<Figure>` with a `<Diagram>`), or a photograph or render (`<PhotoFigure>`); `Figure` numbers the figures in page order and writes the "Fig. N —" caption prefix. Figure numbers cited in the prose are still written by hand.
@@ -145,4 +154,4 @@ Check that the PNG is 1200 × 630 and set in Anybody and Azeret Mono, not a syst
 
 ## Bench log
 
-Each entry is a Markdown file in `src/content/log/` named `YYYY-MM-DD-slug.md` with front matter `title`, `date`, `summary` and optional `tags`. Figures are written as raw HTML inside the Markdown (`<figure class="fig fig--right"><img class="fig__img" …><figcaption><span class="fig__no">Fig. 1</span> — …</figcaption></figure>`). The log index lists entries newest first; nothing else needs editing.
+Each entry is a Markdown file in `src/content/log/` (rendered to HTML by Astro and set by `EntryBody`, the one place in the site that sets HTML from a string: the Markdown is the repository's own and is rendered once, at build time) named `YYYY-MM-DD-slug.md` with front matter `title`, `date`, `summary` and optional `tags`. Figures are written as raw HTML inside the Markdown (`<figure class="fig fig--right"><img class="fig__img" …><figcaption><span class="fig__no">Fig. 1</span> — …</figcaption></figure>`). The log index lists entries newest first; nothing else needs editing.

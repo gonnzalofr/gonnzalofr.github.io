@@ -6,6 +6,7 @@ import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('venus-rover');
+export const slug = p.slug;
 
 function VenusRover() {
   const shown = usePublished(...photos);

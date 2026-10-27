@@ -1,6 +1,7 @@
 // A numbered figure: "Fig. N — caption". Numbers follow the order the figures render on the page, so inserting one
 // renumbers the rest (prose that cites a figure by number still names it by hand). A scrolling drawing inside one
-// (Diagram, FigScroll) is labeled by the caption, whose id it reads from here.
+// (Diagram, FigScroll) is labeled by the caption, whose id it reads from here. The space in "Fig. N" is a no-break
+// space (U+00A0), so the number never wraps away from its word.
 import { createContext, useContext, type ReactNode } from 'react';
 import { cx, useNextFigure, usePublished } from '../site.tsx';
 

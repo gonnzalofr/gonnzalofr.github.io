@@ -1,5 +1,5 @@
 // The bench log's index: every published entry, newest first.
-import { EntryList, PageHeader, Section } from '@portfolio/ui';
+import { EntryList, PageHeader, Prose, Section } from '@portfolio/ui';
 import { isoDate, longDate } from '@portfolio/content';
 import { screen } from './screen';
 
@@ -12,7 +12,7 @@ function LogIndex({ entries }: { entries: LogEntryData[] }) {
     <main id="main">
       <PageHeader kicker={kicker} title="Log" deck="What is on the bench and what changed, one dated entry at a time, newest first." />
       <Section id="entries">
-        {entries.length === 0 && <p className="col-prose">No entries are published yet: each one appears once its photographs are on the site.</p>}
+        {entries.length === 0 && <Prose>No entries are published yet: each one appears once its photographs are on the site.</Prose>}
         <EntryList items={entries.map((e) => ({
           id: e.id,
           kicker: <time dateTime={isoDate(e.date)}>{longDate(e.date)}</time>,

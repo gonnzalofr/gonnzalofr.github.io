@@ -25,16 +25,23 @@ test('project lines', () => {
   assert.equal(v.caseKicker(project('hifi-player')), 'Personal design study · <span class="nb">May – Oct 2026</span>');
 });
 
+// the counts follow from the data, so these tests state the format and take the numbers from it: adding a project
+// (docs/add-a-project.md) must not mean editing them
 test('counts', () => {
-  assert.equal(v.homeWorkKicker, '4 case studies · 1 team · 5 smaller builds — pick one');
-  assert.equal(v.workKicker, '4 case studies · 5 smaller builds · <span class="nb">2025 – present</span>');
-  assert.equal(v.projectsReading, '4 projects · 1 in progress');
+  const n = projects.length;
+  const running = projects.filter((p) => p.status === 'in progress').length;
+  assert.equal(v.homeWorkKicker, `${n} case studies · 1 team · 5 smaller builds — pick one`);
+  assert.equal(v.workKicker, `${n} case studies · 5 smaller builds · <span class="nb">2025 – present</span>`);
+  assert.equal(v.projectsReading, `${n} projects · ${running} in progress`);
   assert.equal(v.buildsReading, '5 builds · 1 in progress');
 });
 
 test('prev/next wraps around in case-study order', () => {
-  assert.deepEqual(Object.values(v.turn('hdmi-dvi-transmitter')).map((p) => p.no), ['04', '02']);
-  assert.deepEqual(Object.values(v.turn('rock-your-baby')).map((p) => p.no), ['03', '01']);
+  const first = projects[0]!;
+  const last = projects.at(-1)!;
+  assert.deepEqual(v.turn(first.slug).prev, last);
+  assert.deepEqual(v.turn(last.slug).next, first);
+  assert.deepEqual(v.turn('venus-rover'), { prev: project('hdmi-dvi-transmitter'), next: project('hifi-player') });
 });
 
 test('projects are numbered 01… in order, with unique slugs', () => {

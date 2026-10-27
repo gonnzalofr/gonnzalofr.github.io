@@ -10,6 +10,7 @@ export { Section } from './layout/Section.tsx';
 export { Inline, parseInline } from './text/Inline.tsx';
 export { Nb, Mono, Vh, Name, Status, type StatusValue } from './text/Marks.tsx';
 export { Kicker, Deck, H2, Prose, PullQuote, MarginNote } from './text/Voice.tsx';
+export { EntryBody } from './text/EntryBody.tsx';
 export { MetaRow, FactList, Checklist, EntryList, LinkList, Timeline, KeyValueRows, type Labeled, type CheckState } from './text/Lists.tsx';
 
 export { Figure, FigScroll, Diagram, ArrowMarker, Hatch, Photo, PhotoFigure, type Placement, type PhotoProps } from './figure/Figure.tsx';

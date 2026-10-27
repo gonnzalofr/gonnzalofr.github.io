@@ -1,0 +1,26 @@
+---
+// A case study: the page component src/screens/work/ has for the project (see lib/cases.ts), in the document. The two
+// pages with an island pass it through a named slot, because only an Astro file can give a component a client:*
+// directive: the TMDS encoder on the HDMI page, the 3D board on the HiFi page (hydrated, and three.js imported, once the
+// figure is within 600px of the viewport).
+import Document from '../../layouts/Document.astro';
+import { TmdsEncoder } from '@portfolio/ui/islands/tmds-encoder';
+import { BoardViewer } from '@portfolio/ui/islands/board-viewer';
+import { board } from '../../figures/hifi-player';
+import { projects, project, views } from '@portfolio/content';
+import { cases } from '../../lib/cases';
+import { siteFor } from '../../lib/site';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug } }));
+}
+const { slug } = Astro.params;
+const p = project(slug!);
+const Case = cases[p.slug]!;
+---
+<Document title={views.caseTitle(p)} description={p.description} current="work-case" ground={p.ground}>
+<Case site={siteFor(Astro.url, Astro.site)}>
+{slug === 'hdmi-dvi-transmitter' && <TmdsEncoder slot="encoder" client:visible />}
+{slug === 'hifi-player' && <BoardViewer slot="board" client:visible={{ rootMargin: '600px 0px' }} {...board} />}
+</Case>
+</Document>

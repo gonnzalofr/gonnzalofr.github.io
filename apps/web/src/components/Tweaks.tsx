@@ -32,7 +32,7 @@ function saved() {
   try {
     const s: unknown = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (Array.isArray(s)) return defaults.map((d, k) => (typeof s[k] === 'string' ? s[k] : d));
-  } catch {}
+  } catch { /* storage blocked: start from the defaults */ }
   return defaults;
 }
 
@@ -51,7 +51,7 @@ export default function Tweaks() {
   useEffect(() => {
     const root = document.documentElement;
     for (const [k, v] of Object.entries(vals)) root.style.setProperty(k, v);
-    try { localStorage.setItem(KEY, JSON.stringify(values)); } catch {}
+    try { localStorage.setItem(KEY, JSON.stringify(values)); } catch { /* storage blocked: the settings last for this visit */ }
   });
 
   return (

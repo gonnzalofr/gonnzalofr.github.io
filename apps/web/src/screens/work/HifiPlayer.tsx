@@ -7,6 +7,7 @@ import { screen } from '../screen';
 import { ProjectHeader, ProjectTurn } from './case';
 
 const p = project('hifi-player');
+export const slug = p.slug;
 
 /** `board`: the BoardViewer island, rendered by the route (only an Astro route can hydrate a component). */
 function HifiPlayer({ board }: { board?: ReactNode }) {

@@ -31,10 +31,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # turbo runs the typecheck and the unit tests (the tokens' contrast test among them), builds the tokens and the site,
-      # then tooling/check-site/check_site.py on apps/web/dist with the runner's python3; any failure, and any checker
-      # ERROR, fails the job before anything is uploaded
-      - run: pnpm turbo run typecheck test check
+      # turbo runs the lint (the design system's rules, tooling/eslint-config), the typecheck and the unit tests (the tokens'
+      # contrast test among them), builds the tokens and the site, then tooling/check-site/check_site.py on apps/web/dist
+      # with the runner's python3; any failure, and any checker ERROR, fails the job before anything is uploaded
+      - run: pnpm turbo run lint typecheck test check
         env:
           # optional repository secret: a regex of private strings (your own phone numbers) that must never ship
           CHECK_PRIVATE: ${{ secrets.CHECK_PRIVATE }}
